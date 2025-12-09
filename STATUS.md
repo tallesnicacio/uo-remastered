@@ -17,8 +17,8 @@
 ## Estado Atual
 - Protocolos: `shared/packets/messages.ts` define mensagens hello/login/ping/chat/move; `shared/index.ts` exporta constantes e pacotes.
 - Configs: exemplos em `server/config/server.json`, `players.json`, `combat.json`.
-- Server: `server/src/index.ts` carrega configs, exige login para chat/move, mapeia identity por WebSocket e posição inicial, responde welcome/pong/login/spawn/move; tick loop 20 t/s.
-- Server protocolo: `server/src/protocol.ts` com parse/handler (hello/login/ping/chat/move), validação básica de payloads/posição e gate de login para ações.
+- Server: `server/src/index.ts` carrega configs, exige login para chat/move, mapeia identidade/sessão por WebSocket, cria/restaura sessão (sessionId), responde welcome/pong/login/spawn/move; tick loop 20 t/s.
+- Server protocolo: `server/src/protocol.ts` com parse/handler (hello/login/ping/chat/move), validação básica de payloads/posição, gate de login e criação/restauração de sessão.
 - Client: bootstrap mínimo em `client/src/index.ts` que escreve um banner em DOM.
 - Shared: constantes em `shared/constants/runtime.ts`; DTOs e tipos de posição em `shared/packets/messages.ts` e `shared/types/position.ts`.
 

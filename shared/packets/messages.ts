@@ -12,6 +12,7 @@ export type ClientLogin = {
   name: string;
   password?: string;
   clientVersion?: string;
+  sessionId?: string;
 };
 
 export type ClientPing = {
@@ -44,6 +45,7 @@ export type ServerLoginOk = {
   playerId: string;
   name: string;
   position: Position;
+  sessionId: string;
 };
 
 export type ServerPong = {

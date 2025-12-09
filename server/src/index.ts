@@ -1,5 +1,6 @@
 import { handleClientMessage, parseClientMessage } from "./protocol";
 import { loadConfig } from "./config";
+import { SessionStore } from "./session";
 import type { ServerMessage } from "@shared/packets/messages";
 import { GAME_NAME } from "@shared/constants/runtime";
 import type { Position } from "@shared/types/position";
@@ -9,8 +10,8 @@ const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 const clients = new Set<WebSocket>();
 const identities = new Map<WebSocket, { id: string; name: string }>();
-const entityPositions = new Map<string, Position>();
 let nextEntityId = 1;
+const sessions = new SessionStore();
 
 const startPosition = (): Position => ({
   x: 0,
@@ -64,16 +65,19 @@ const server = Bun.serve<WebSocket>({
       };
 
       const identity = identities.get(ws);
+      const bindSession = (sessionId: string, name: string, position: Position) => {
+        identities.set(ws, { id: sessionId, name });
+        sessions.updatePosition(sessionId, position);
+      };
 
       handleClientMessage(parsed, {
         send,
         broadcast,
         startPosition,
         allocateEntityId: () => `p-${nextEntityId++}`,
-        onLogin: (id, name) => {
-          identities.set(ws, { id, name });
-          entityPositions.set(id, startPosition());
-        },
+        createSession: (name, position) => sessions.create(name, position),
+        findSession: (sessionId) => sessions.get(sessionId),
+        bindSession,
         entityId: identity?.id,
         entityName: identity?.name,
         tickRate: TICK_RATE,

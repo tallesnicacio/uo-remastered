@@ -6,7 +6,9 @@ type DispatchContext = {
   broadcast: (msg: ServerMessage) => void;
   startPosition: () => Position;
   allocateEntityId: () => string;
-  onLogin?: (id: string, name: string) => void;
+  createSession: (name: string, position: Position) => { id: string };
+  findSession: (sessionId: string) => { id: string; name: string; position: Position } | undefined;
+  bindSession: (id: string, name: string, position: Position) => void;
   entityId?: string;
   entityName?: string;
   tickRate: number;
@@ -87,23 +89,26 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
       });
       return;
     case "login": {
-      const playerId = ctx.allocateEntityId();
-      const start = ctx.startPosition();
+      const existing = msg.sessionId ? ctx.findSession(msg.sessionId) : undefined;
+      const spawnPos = existing?.position ?? ctx.startPosition();
+      const playerId = existing?.id ?? ctx.allocateEntityId();
+      const session = existing ?? ctx.createSession(msg.name, spawnPos);
 
-      ctx.onLogin?.(playerId, msg.name);
+      ctx.bindSession(session.id, msg.name, spawnPos);
 
       ctx.send({
         type: "login_ok",
         playerId,
         name: msg.name,
-        position: start
+        position: spawnPos,
+        sessionId: session.id
       });
 
       ctx.broadcast({
         type: "spawn",
         entityId: playerId,
         name: msg.name,
-        position: start
+        position: spawnPos
       });
       return;
     }
