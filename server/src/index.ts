@@ -9,6 +9,7 @@ const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 const clients = new Set<WebSocket>();
 const identities = new Map<WebSocket, { id: string; name: string }>();
+const entityPositions = new Map<string, Position>();
 let nextEntityId = 1;
 
 const startPosition = (): Position => ({
@@ -69,11 +70,15 @@ const server = Bun.serve<WebSocket>({
         broadcast,
         startPosition,
         allocateEntityId: () => `p-${nextEntityId++}`,
-        onLogin: (id, name) => identities.set(ws, { id, name }),
+        onLogin: (id, name) => {
+          identities.set(ws, { id, name });
+          entityPositions.set(id, startPosition());
+        },
         entityId: identity?.id,
         entityName: identity?.name,
         tickRate: TICK_RATE,
-        motd: config.server.motd
+        motd: config.server.motd,
+        requireLogin: true
       });
     },
     close(ws) {

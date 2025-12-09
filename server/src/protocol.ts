@@ -11,6 +11,7 @@ type DispatchContext = {
   entityName?: string;
   tickRate: number;
   motd: string;
+  requireLogin: boolean;
 };
 
 const decoder = new TextDecoder();
@@ -114,6 +115,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
       });
       return;
     case "chat":
+      if (ctx.requireLogin && !ctx.entityId) {
+        ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de enviar chat." });
+        return;
+      }
       ctx.broadcast({
         type: "chat",
         from: ctx.entityName ?? "anon",
@@ -121,6 +126,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
       });
       return;
     case "move":
+      if (ctx.requireLogin && !ctx.entityId) {
+        ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de mover." });
+        return;
+      }
       ctx.broadcast({
         type: "entity_move",
         entityId: ctx.entityId ?? "anon",
