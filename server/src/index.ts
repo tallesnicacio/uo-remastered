@@ -9,7 +9,7 @@ const config = loadConfig();
 const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 const clients = new Set<WebSocket>();
-const identities = new Map<WebSocket, { id: string; name: string }>();
+const identities = new Map<WebSocket, { sessionId: string; entityId: string; name: string }>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
 
@@ -65,8 +65,8 @@ const server = Bun.serve<WebSocket>({
       };
 
       const identity = identities.get(ws);
-      const bindSession = (sessionId: string, name: string, position: Position) => {
-        identities.set(ws, { id: sessionId, name });
+      const bindSession = (sessionId: string, entityId: string, name: string, position: Position) => {
+        identities.set(ws, { sessionId, entityId, name });
         sessions.updatePosition(sessionId, position);
       };
 
@@ -75,11 +75,13 @@ const server = Bun.serve<WebSocket>({
         broadcast,
         startPosition,
         allocateEntityId: () => `p-${nextEntityId++}`,
-        createSession: (name, position) => sessions.create(name, position),
+        createSession: (name, position, entityId) => sessions.create(name, position, entityId),
         findSession: (sessionId) => sessions.get(sessionId),
+        updateSessionPosition: (sessionId, position) => sessions.updatePosition(sessionId, position),
         bindSession,
-        entityId: identity?.id,
+        entityId: identity?.entityId,
         entityName: identity?.name,
+        sessionId: identity?.sessionId,
         tickRate: TICK_RATE,
         motd: config.server.motd,
         requireLogin: true

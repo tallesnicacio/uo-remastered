@@ -6,11 +6,13 @@ type DispatchContext = {
   broadcast: (msg: ServerMessage) => void;
   startPosition: () => Position;
   allocateEntityId: () => string;
-  createSession: (name: string, position: Position) => { id: string };
-  findSession: (sessionId: string) => { id: string; name: string; position: Position } | undefined;
-  bindSession: (id: string, name: string, position: Position) => void;
+  createSession: (name: string, position: Position, entityId: string) => { id: string; entityId: string };
+  findSession: (sessionId: string) => { id: string; name: string; position: Position; entityId: string } | undefined;
+  updateSessionPosition: (sessionId: string, position: Position) => void;
+  bindSession: (id: string, entityId: string, name: string, position: Position) => void;
   entityId?: string;
   entityName?: string;
+  sessionId?: string;
   tickRate: number;
   motd: string;
   requireLogin: boolean;
@@ -91,10 +93,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
     case "login": {
       const existing = msg.sessionId ? ctx.findSession(msg.sessionId) : undefined;
       const spawnPos = existing?.position ?? ctx.startPosition();
-      const playerId = existing?.id ?? ctx.allocateEntityId();
-      const session = existing ?? ctx.createSession(msg.name, spawnPos);
+      const playerId = existing?.entityId ?? ctx.allocateEntityId();
+      const session = existing ?? ctx.createSession(msg.name, spawnPos, playerId);
 
-      ctx.bindSession(session.id, msg.name, spawnPos);
+      ctx.bindSession(session.id, playerId, msg.name, spawnPos);
 
       ctx.send({
         type: "login_ok",
@@ -135,6 +137,11 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de mover." });
         return;
       }
+
+      if (ctx.sessionId) {
+        ctx.updateSessionPosition(ctx.sessionId, msg.position);
+      }
+
       ctx.broadcast({
         type: "entity_move",
         entityId: ctx.entityId ?? "anon",
