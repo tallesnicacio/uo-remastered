@@ -1,15 +1,16 @@
 import { Palette } from "./palette";
+import type { SpriteFrames } from "./sprites";
+import type { World } from "../state/world";
 
 type Renderer = {
-  drawGrid: () => void;
-  drawAvatar: (gx: number, gy: number) => void;
+  setWorld: (world: World) => void;
 };
 
 const TILE = 32;
 const GRID_W = 20;
 const GRID_H = 12;
 
-export function createRenderer(root: HTMLElement, palette: Palette): Renderer {
+export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite: SpriteFrames): Renderer {
   const canvas = document.createElement("canvas");
   canvas.width = GRID_W * TILE;
   canvas.height = GRID_H * TILE;
@@ -22,12 +23,15 @@ export function createRenderer(root: HTMLElement, palette: Palette): Renderer {
     throw new Error("Canvas context not available");
   }
 
+  let worldRef: World | null = null;
+  let frame = 0;
+
   const drawTile = (x: number, y: number, color: string) => {
     ctx.fillStyle = color;
     ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
   };
 
-  const drawGrid = () => {
+  const drawGround = () => {
     for (let y = 0; y < GRID_H; y++) {
       for (let x = 0; x < GRID_W; x++) {
         const color = (x + y) % 2 === 0 ? palette.grass : palette.dirt;
@@ -36,13 +40,30 @@ export function createRenderer(root: HTMLElement, palette: Palette): Renderer {
     }
   };
 
-  const drawAvatar = (gx: number, gy: number) => {
-    ctx.fillStyle = palette.outline;
-    ctx.fillRect(gx * TILE + 6, gy * TILE + 4, TILE - 12, TILE - 8);
+  const drawEntities = () => {
+    if (!worldRef) return;
 
-    ctx.fillStyle = palette.avatar;
-    ctx.fillRect(gx * TILE + 8, gy * TILE + 6, TILE - 16, TILE - 12);
+    const entities = worldRef.getEntities();
+    const sprite = avatarSprite.frames[frame % avatarSprite.frames.length];
+
+    entities.forEach((entity) => {
+      const { x, y } = entity.position;
+      ctx.drawImage(sprite, x * TILE + 2, y * TILE + 2);
+    });
   };
 
-  return { drawGrid, drawAvatar };
+  const render = () => {
+    frame++;
+    drawGround();
+    drawEntities();
+    requestAnimationFrame(render);
+  };
+
+  requestAnimationFrame(render);
+
+  return {
+    setWorld(world: World) {
+      worldRef = world;
+    }
+  };
 }

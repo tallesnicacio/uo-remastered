@@ -5,6 +5,7 @@ export class Palette {
   readonly stone = "#9ea09c";
   readonly water = "#3c6ca8";
   readonly avatar = "#d4c18f";
+  readonly avatarShadow = "#b7a06d";
   readonly outline = "#2b2b2b";
   readonly background = "#0f0f13";
 }

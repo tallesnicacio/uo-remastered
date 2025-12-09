@@ -19,10 +19,13 @@
 - Configs: exemplos em `server/config/server.json`, `players.json`, `combat.json`.
 - Server: `server/src/index.ts` carrega configs, exige login para chat/move, mapeia identidade/sessão por WebSocket, cria/restaura sessão (sessionId), responde welcome/pong/login/spawn/move; tick loop 20 t/s.
 - Server protocolo: `server/src/protocol.ts` com parse/handler (hello/login/ping/chat/move), validação básica de payloads/posição, gate de login e criação/restauração de sessão.
-- Client: bootstrap com renderer Canvas em `client/src/renderer/canvas.ts` + paleta em `client/src/renderer/palette.ts`; `client/src/index.ts` desenha grid e avatar placeholder.
+- Client: renderer Canvas com múltiplos layers e sprites procedurais (`client/src/renderer/canvas.ts`, `renderer/palette.ts`, `renderer/sprites.ts`); `client/src/index.ts` integra renderer, world state e input.
 - Shared: constantes em `shared/constants/runtime.ts`; DTOs e tipos de posição em `shared/packets/messages.ts` e `shared/types/position.ts`.
+- Rede cliente: `client/src/net/client.ts` implementa hello/login/ping/chat/move e callbacks.
+- Estado cliente: `client/src/state/world.ts` mantém entidades e posição local.
+- Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 
 ## Próximos Passos Sugeridos
 - Expandir autenticação/identidade (persistir sessions) e mapear entidade por WebSocket no servidor.
-- Escolher stack de renderização do client (Canvas/Pixi) e montar pipeline de assets.
-- Adicionar ESLint/Prettier/TS config específicos se necessário.
+- Integrar render/anim com dados de rede (exibir múltiplas entidades, prever latência).
+- Rodar lint/format/typecheck quando dependências estiverem instaladas.
