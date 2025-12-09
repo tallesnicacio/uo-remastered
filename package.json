@@ -1,0 +1,32 @@
+{
+  "name": "newuo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.1.0",
+  "workspaces": [
+    "client",
+    "server",
+    "shared",
+    "tools/*"
+  ],
+  "scripts": {
+    "dev": "bun --watch server/src/index.ts",
+    "dev:client": "bun --watch client/src/index.ts",
+    "dev:both": "bun run dev & bun run dev:client",
+    "start": "bun run server/src/index.ts",
+    "build": "bun build server/src/index.ts --outdir dist/server --target bun --minify",
+    "build:client": "bun build client/src/index.ts --outdir dist/client --target browser",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "lint": "bunx eslint . --ext .ts,.tsx",
+    "format": "bunx prettier --write .",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.0"
+  }
+}

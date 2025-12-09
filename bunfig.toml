@@ -1,0 +1,13 @@
+[install]
+cache = true
+
+[run]
+sourcemap = "inline"
+
+[test]
+coverage = true
+coverageDir = "coverage"
+
+[bundle]
+target = "bun"
+minify = true

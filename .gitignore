@@ -1,0 +1,24 @@
+# Bun/Node output
+node_modules
+bun.lockb
+.pnp.*
+.cache
+dist
+coverage
+ServUO/
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+
+# Env/config
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

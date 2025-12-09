@@ -1,0 +1,7 @@
+{
+  "defaultDamage": 5,
+  "swingDelayMs": 2500,
+  "spellFizzleChance": 0.05,
+  "weaponSwingVariance": 0.2,
+  "pvpEnabled": true
+}
