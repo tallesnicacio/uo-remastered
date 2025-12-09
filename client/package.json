@@ -6,6 +6,6 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "start": "bun run src/index.ts",
-    "build": "bun build src/index.ts --outdir ../dist/client --target browser"
+    "build": "bun build src/index.ts --outdir ../dist/client --target browser --sourcemap=inline"
   }
 }
