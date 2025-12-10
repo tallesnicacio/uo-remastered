@@ -20,6 +20,8 @@ type DispatchContext = {
   listPlayers: () => Array<{ id: string; name: string }>;
   findEntity: (entityId: string) => { id: string; name: string; position: Position } | null;
   killEntity: (entityId: string) => { id: string; name: string } | null;
+  saveStats: (sessionId: string, stats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number; exp: number; expMax: number }) => void;
+  currentStats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number; exp: number; expMax: number } | null;
 };
 
 const decoder = new TextDecoder();
@@ -163,6 +165,9 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
 
       if (ctx.sessionId) {
         ctx.updateSessionPosition(ctx.sessionId, msg.position);
+        if (ctx.currentStats) {
+          ctx.saveStats(ctx.sessionId, ctx.currentStats);
+        }
       }
 
       ctx.broadcast({

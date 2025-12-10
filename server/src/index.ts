@@ -11,10 +11,14 @@ const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 const clients = new Set<WebSocket>();
 const identities = new Map<WebSocket, { sessionId: string; entityId: string; name: string }>();
-const entities = new Map<
-  string,
-  { name: string; position: Position; dead?: boolean; stats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number; exp: number; expMax: number } }
->();
+type EntityState = {
+  name: string;
+  position: Position;
+  dead?: boolean;
+  stats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number; exp: number; expMax: number };
+};
+
+const entities = new Map<string, EntityState>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
 const blocked = new Set<string>((collision.blocked as [number, number][]).map(([x, y]) => `${x},${y}`));
@@ -86,7 +90,8 @@ const server = Bun.serve<WebSocket>({
       const bindSession = (sessionId: string, entityId: string, name: string, position: Position) => {
         identities.set(ws, { sessionId, entityId, name });
         sessions.updatePosition(sessionId, position);
-        entities.set(entityId, { name, position, stats: baseStats() });
+        const existingStats = sessions.get(sessionId)?.stats;
+        entities.set(entityId, { name, position, stats: existingStats ?? baseStats() });
         console.log(`[login] ${name} (${entityId})`);
       };
 
@@ -122,7 +127,9 @@ const server = Bun.serve<WebSocket>({
           if (!ent) return null;
           entities.delete(entityId);
           return { id: entityId, name: ent.name };
-        }
+        },
+        saveStats: (sessionId, stats) => sessions.updateStats(sessionId, stats),
+        currentStats: identity?.entityId ? entities.get(identity.entityId)?.stats ?? null : null
       });
     },
     close(ws) {

@@ -56,6 +56,7 @@
 - HUD agora tem barras de HP/Mana e atualiza a cada snapshot.
 - EXP: stats incluem exp/expMax e HUD exibe barra de experiência.
 - Server regen: HP/Mana regeneram automaticamente no tick e refletem nos snapshots.
+- Server persiste stats na sessão ao mover/logar e reutiliza stats ao relogar.
 - Snapshot/spawn carregam stats (simples) e HUD usa `getLocalStats`.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).

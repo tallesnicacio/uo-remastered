@@ -5,6 +5,15 @@ export type Session = {
   entityId: string;
   name: string;
   position: Position;
+  stats?: {
+    hp: number;
+    hpMax: number;
+    mana: number;
+    manaMax: number;
+    level: number;
+    exp: number;
+    expMax: number;
+  };
 };
 
 export class SessionStore {
@@ -25,6 +34,14 @@ export class SessionStore {
     const session = this.sessions.get(id);
     if (session) {
       session.position = position;
+      this.sessions.set(id, session);
+    }
+  }
+
+  updateStats(id: string, stats: Session["stats"]) {
+    const session = this.sessions.get(id);
+    if (session) {
+      session.stats = stats;
       this.sessions.set(id, session);
     }
   }
