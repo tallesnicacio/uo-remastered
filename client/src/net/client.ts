@@ -21,6 +21,7 @@ export class NetClient {
   onChat?: (from: string, text: string) => void;
   onReconcile?: (position: Position) => void;
   onSnapshot?: (entities: Array<{ id: string; name: string; position: Position }>) => void;
+  onError?: (code: string, message: string) => void;
 
   connect() {
     this.socket = new WebSocket(this.url);
@@ -105,6 +106,7 @@ export class NetClient {
         return;
       case "error":
         console.error(`[server error] ${data.code}: ${data.message}`);
+        this.onError?.(data.code, data.message);
         return;
       default:
         console.warn("Mensagem desconhecida", data);

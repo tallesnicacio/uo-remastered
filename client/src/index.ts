@@ -58,6 +58,10 @@ function bootstrap() {
     world.applySnapshot(entities);
   };
 
+  net.onError = (code, message) => {
+    overlay.log(`[erro] ${code}: ${message}`);
+  };
+
   net.onChat = (from, text) => {
     console.log(`[chat] ${from}: ${text}`);
     overlay.log(`[chat] ${from}: ${text}`);

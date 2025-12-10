@@ -30,6 +30,7 @@
 - Pathfinding: A* simples em `client/src/pathfinding.ts` (grid, 4 direções) usando função `isWalkable`; obstáculos demo em `client/src/data/obstacles.ts` renderizados como blocos.
 - Snapshots: servidor mantém mapa de entidades e envia snapshot periódico (1s); cliente aplica snapshot via `NetClient.onSnapshot` e `World.applySnapshot`.
 - Colisão servidor: mapa `server/data/collision.json`; servidor bloqueia movimentos em tiles ocupados e retorna erro `blocked_tile`.
+- Cliente exibe erros de server (ex.: `blocked_tile`) no overlay.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
