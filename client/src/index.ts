@@ -127,17 +127,20 @@ function bootstrap() {
         level: 5,
         title: "Viajante"
       };
+      const local = world.getLocalPosition();
+      const dist = local ? Math.hypot(hit.position.x - local.x, hit.position.y - local.y).toFixed(1) : "?";
       overlay.showDetails(hit.name, [
         stats.title ?? "",
         `HP: ${stats.hp}/${stats.hpMax}`,
         `Mana: ${stats.mana}/${stats.manaMax}`,
-        `Nível: ${stats.level}`
+        `Nível: ${stats.level}`,
+        `Distância: ${dist}`
       ]);
       overlay.showTooltip(
         pos.x * 32,
         pos.y * 32,
         hit.name,
-        [`HP ${stats.hp}/${stats.hpMax}`, `Mana ${stats.mana}/${stats.manaMax}`, `Nível ${stats.level}`]
+        [`HP ${stats.hp}/${stats.hpMax}`, `Mana ${stats.mana}/${stats.manaMax}`, `Nível ${stats.level}`, `Dist: ${dist}`]
       );
     } else {
       renderer.highlight(pos);

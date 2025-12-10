@@ -25,6 +25,7 @@ type DrawEntity = {
   y: number;
   name: string;
   frame: number;
+  moved: boolean;
 };
 
 export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite: SpriteFrames): Renderer {
@@ -96,17 +97,18 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     const entities: DrawEntity[] = worldRef.getEntities().map((entity) => {
       const target = entity.target ?? entity.position;
       const blended = blendPosition(entity.position, target, delta);
+      const moved = Math.round(blended.x) !== Math.round(entity.position.x) || Math.round(blended.y) !== Math.round(entity.position.y);
       // Atualiza posição interpolada para próxima iteração
       worldRef?.updatePosition(entity.id, blended);
 
       // Ajusta posição para câmera centrada no player local
       const screenX = blended.x - camera.x + CENTER_X;
       const screenY = blended.y - camera.y + CENTER_Y;
-      return { id: entity.id, x: screenX, y: screenY, name: entity.name, frame: frame % avatarSprite.frames.length };
+      return { id: entity.id, x: screenX, y: screenY, name: entity.name, moved, frame: frame % avatarSprite.frames.length };
     });
 
     entities.forEach((entity) => {
-      const sprite = avatarSprite.frames[entity.frame];
+      const sprite = avatarSprite.frames[entity.moved ? entity.frame : 0];
       const shadow = avatarSprite.shadow;
       const px = entity.x * TILE + 2;
       const py = entity.y * TILE + 2;

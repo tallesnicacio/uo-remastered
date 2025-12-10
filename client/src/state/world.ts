@@ -6,6 +6,7 @@ export type Entity = {
   position: Position;
   target?: Position;
   stats?: EntityStats;
+  lastPos?: Position;
 };
 
 export type EntityStats = {
