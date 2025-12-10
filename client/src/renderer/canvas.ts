@@ -2,6 +2,7 @@ import { Palette } from "./palette";
 import type { SpriteFrames } from "./sprites";
 import type { World } from "../state/world";
 import type { Position } from "@shared/types/position";
+import type { MapData } from "../types/map";
 
 type Renderer = {
   setWorld: (world: World) => void;
@@ -14,10 +15,8 @@ type Renderer = {
 };
 
 const TILE = 32;
-const GRID_W = 20;
-const GRID_H = 12;
-const CENTER_X = GRID_W / 2;
-const CENTER_Y = GRID_H / 2;
+const CENTER_X = 10;
+const CENTER_Y = 6;
 const LERP_SPEED = 10; // maior = mais rápido
 
 type DrawEntity = {
@@ -29,10 +28,12 @@ type DrawEntity = {
   moved: boolean;
 };
 
-export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite: SpriteFrames): Renderer {
+export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite: SpriteFrames, mapData?: MapData): Renderer {
   const canvas = document.createElement("canvas");
-  canvas.width = GRID_W * TILE;
-  canvas.height = GRID_H * TILE;
+  const gridW = mapData?.width ?? 20;
+  const gridH = mapData?.height ?? 12;
+  canvas.width = gridW * TILE;
+  canvas.height = gridH * TILE;
   canvas.style.imageRendering = "pixelated";
   canvas.style.background = palette.background;
   root.appendChild(canvas);
@@ -54,6 +55,26 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
   let destination: Position | null = null;
   let obstacles: Array<{ x: number; y: number }> = [];
   let errorPos: { pos: Position; ttl: number } | null = null;
+  const map = mapData;
+  const mapColor = (x: number, y: number): string => {
+    if (!map || !map.tiles) {
+      return (x + y) % 2 === 0 ? palette.grass : palette.dirt;
+    }
+    const row = map.tiles[y] ?? "";
+    const tile = row[x] ?? "g";
+    switch (tile) {
+      case "g":
+        return palette.grass;
+      case "s":
+        return palette.sand;
+      case "w":
+        return palette.water;
+      case "r":
+        return palette.stone;
+      default:
+        return palette.dirt;
+    }
+  };
 
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -73,9 +94,9 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
   };
 
   const drawGround = () => {
-    for (let y = 0; y < GRID_H; y++) {
-      for (let x = 0; x < GRID_W; x++) {
-        const color = (x + y) % 2 === 0 ? palette.grass : palette.dirt;
+    for (let y = 0; y < gridH; y++) {
+      for (let x = 0; x < gridW; x++) {
+        const color = mapColor(x, y);
         drawTile(x, y, color);
       }
     }

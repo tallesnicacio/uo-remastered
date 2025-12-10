@@ -11,6 +11,8 @@ import { ChatBox } from "./ui/chat";
 import { Hud } from "./ui/hud";
 import { LoginForm } from "./ui/login";
 import type { Position } from "@shared/types/position";
+import mapData from "../data/map.json";
+import type { MapData } from "./types/map";
 
 const VERSION = "0.1.0";
 let moveQueue: Position[] = [];
@@ -34,14 +36,14 @@ function bootstrap() {
   const palette = new Palette();
   const avatarSprites = makeAvatarSprite(palette);
   const world = new World();
-  const renderer = createRenderer(root, palette, avatarSprites);
+  const renderer = createRenderer(root, palette, avatarSprites, mapData as MapData);
   const net = new NetClient(`ws://localhost:2593`, VERSION);
   const overlay = new Overlay(root);
   const chat = new ChatBox(root);
   const hud = new Hud(root);
   const login = new LoginForm(root);
 
-  world.setObstacles(demoObstacles);
+  world.setObstacles(mapData.blocked.map(([x, y]) => ({ x, y })));
   renderer.setObstacles(world.getObstacles());
 
   net.onWelcome = (info) => {
