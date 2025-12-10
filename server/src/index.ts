@@ -168,27 +168,27 @@ const server = Bun.serve({
           return { position: pos, stats: ent.stats };
         },
         changeRole: (target, role) => {
-          for (const [sid, sess] of sessions["sessions"]) {
-            if (sess.name === target) {
-              sess.role = role;
-              sessions["sessions"].set(sid, sess);
-              const ent = entities.get(sess.entityId);
-              if (ent) {
-                ent.role = role;
-                entities.set(sess.entityId, ent);
-              }
-              sessions.saveAll();
-              return true;
+          const ok = sessions.setRoleByName(target, role);
+          if (!ok) return false;
+          for (const [id, ent] of entities.entries()) {
+            const sess = sessions.getByEntity(id);
+            if (sess && sess.name === target) {
+              ent.role = role;
+              entities.set(id, ent);
+              break;
             }
           }
-          return false;
+          return true;
         },
         applyDamage: (entityId, amount) => {
           const ent = entities.get(entityId);
           if (!ent) return null;
           ent.stats.hp = Math.max(0, ent.stats.hp - amount);
           entities.set(entityId, ent);
-          sessions.updateStats(ent.name, ent.stats);
+          const sess = sessions.getByEntity(entityId);
+          if (sess) {
+            sessions.updateStats(sess.id, ent.stats);
+          }
           return { id: entityId, name: ent.name, hp: ent.stats.hp, hpMax: ent.stats.hpMax };
         },
         giveItem: (targetName, item, qty) => {

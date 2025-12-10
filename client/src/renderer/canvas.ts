@@ -8,6 +8,8 @@ type Renderer = {
   setWorld: (world: World) => void;
   onRightClick: (handler: (pos: Position) => void) => void;
   onLeftClick: (handler: (pos: Position) => void) => void;
+  onDoubleClick: (handler: (pos: Position) => void) => void;
+  onCursorMove: (handler: (pos: Position) => void) => void;
   highlight: (pos: Position | null) => void;
   markDestination: (pos: Position | null) => void;
   setObstacles: (coords: Array<{ x: number; y: number }>) => void;
@@ -51,6 +53,8 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
   let camera: Position = { x: 0, y: 0, map: "Felucca" };
   let rightHandler: ((pos: Position) => void) | null = null;
   let leftHandler: ((pos: Position) => void) | null = null;
+  let dblHandler: ((pos: Position) => void) | null = null;
+  let moveHandler: ((pos: Position) => void) | null = null;
   let selected: Position | null = null;
   let destination: Position | null = null;
   let obstacles: Array<{ x: number; y: number }> = [];
@@ -204,6 +208,16 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     }
   });
 
+  canvas.addEventListener("mousemove", (ev) => {
+    const pos = screenToWorld(ev.clientX, ev.clientY);
+    if (pos && moveHandler) moveHandler(pos);
+  });
+
+  canvas.addEventListener("dblclick", (ev) => {
+    const pos = screenToWorld(ev.clientX, ev.clientY);
+    if (pos && dblHandler) dblHandler(pos);
+  });
+
   requestAnimationFrame(render);
 
   return {
@@ -215,6 +229,12 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     },
     onLeftClick(handler: (pos: Position) => void) {
       leftHandler = handler;
+    },
+    onDoubleClick(handler: (pos: Position) => void) {
+      dblHandler = handler;
+    },
+    onCursorMove(handler: (pos: Position) => void) {
+      moveHandler = handler;
     },
     highlight(pos: Position | null) {
       selected = pos;

@@ -42,6 +42,13 @@ export class SessionStore {
     return this.sessions.get(id);
   }
 
+  getByEntity(entityId: string): Session | undefined {
+    for (const session of this.sessions.values()) {
+      if (session.entityId === entityId) return session;
+    }
+    return undefined;
+  }
+
   updatePosition(id: string, position: Position) {
     const session = this.sessions.get(id);
     if (session) {
@@ -58,6 +65,27 @@ export class SessionStore {
       this.sessions.set(id, session);
       this.persist();
     }
+  }
+
+  setRole(id: string, role: import("@shared/packets/messages").UserRole) {
+    const session = this.sessions.get(id);
+    if (session) {
+      session.role = role;
+      this.sessions.set(id, session);
+      this.persist();
+    }
+  }
+
+  setRoleByName(name: string, role: import("@shared/packets/messages").UserRole): boolean {
+    for (const [id, session] of this.sessions.entries()) {
+      if (session.name === name) {
+        session.role = role;
+        this.sessions.set(id, session);
+        this.persist();
+        return true;
+      }
+    }
+    return false;
   }
 
   persist(): boolean {

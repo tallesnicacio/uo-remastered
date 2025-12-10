@@ -19,13 +19,15 @@ import type { MapData } from "./types/map";
 
 const VERSION = "0.1.0";
 let moveQueue: Position[] = [];
-const MOVE_INTERVAL_MS = 150;
+let MOVE_INTERVAL_MS = 150;
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 12;
 let lastSnapshotCount = 0;
 let playerName = "";
 let playerPassword = "1234";
 const inventory = new Inventory();
+let rightHold = false;
+let rightTarget: Position | null = null;
 
 function bootstrap() {
   console.info(`[${GAME_NAME}] Client bootstrap`);
@@ -227,13 +229,26 @@ function bootstrap() {
 
   setInterval(() => {
     if (!world.localId) return;
+    if (rightHold && rightTarget) {
+      const current = world.getLocalPosition();
+      if (current) {
+        const path = aStarPath(current, rightTarget, (x, y) => world.isWalkable(x, y));
+        if (path.ok && path.path.length > 1) {
+          const dist = Math.hypot(rightTarget.x - current.x, rightTarget.y - current.y);
+          MOVE_INTERVAL_MS = dist > 5 ? 90 : 150;
+          moveQueue = path.path.slice(1, dist > 5 ? 3 : 2);
+        } else {
+          moveQueue = [];
+        }
+      }
+    }
     if (moveQueue.length === 0) return;
     const next = moveQueue.shift();
     if (!next) return;
     overlay.log(`Passo: (${next.x},${next.y}) fila=${moveQueue.length}`);
     world.setTarget(world.localId, next);
     net.sendMove(next);
-  }, MOVE_INTERVAL_MS);
+  }, 80);
 
   // Input simples: seta movimenta e envia move.
   window.addEventListener("keydown", (ev) => {
@@ -262,23 +277,16 @@ function bootstrap() {
       renderer.flashError(pos);
       return;
     }
-    const current = world.getLocalPosition();
-    if (!current) return;
-    const path = aStarPath(current, pos, (x, y) => world.isWalkable(x, y));
-    if (!path.ok || path.path.length === 0) {
-      overlay.log("Destino inalcançável");
-      renderer.flashError(pos);
-      return;
-    }
+    rightHold = true;
+    rightTarget = pos;
     renderer.highlight(pos);
     renderer.markDestination(pos);
-
-    // Enfileira caminho inteiro (ignora primeira posição se for a atual)
-    moveQueue = path.path.slice(1);
-    overlay.log(`Movendo: ${moveQueue.length} passos`);
   });
 
   renderer.onLeftClick((pos) => {
+    rightHold = false;
+    moveQueue = [];
+    renderer.markDestination(null);
     const hit = world.findEntityAt(Math.round(pos.x), Math.round(pos.y));
     if (hit) {
       renderer.highlight(hit.position);
@@ -312,6 +320,20 @@ function bootstrap() {
       overlay.log(`Terreno em (${Math.round(pos.x)},${Math.round(pos.y)})`);
       overlay.showDetails("Terreno", ["Nenhum alvo"]);
       overlay.hideTooltip();
+    }
+  });
+
+  renderer.onDoubleClick((pos) => {
+    const hit = world.findEntityAt(Math.round(pos.x), Math.round(pos.y));
+    if (hit) {
+      net.sendChat(`/attack ${hit.id}`);
+      overlay.log(`Interagir/Atacar: ${hit.name}`);
+    }
+  });
+
+  renderer.onCursorMove((pos) => {
+    if (rightHold) {
+      rightTarget = pos;
     }
   });
 }
