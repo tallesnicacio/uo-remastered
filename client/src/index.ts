@@ -62,6 +62,10 @@ function bootstrap() {
   net.onSnapshot = (entities) => {
     world.applySnapshot(entities);
     overlay.setStatus(`Conectado | Entidades: ${entities.length}`);
+    // Se snapshot não contém localId, limpar fila para evitar drift
+    if (world.localId && !entities.find((e) => e.id === world.localId)) {
+      moveQueue = [];
+    }
   };
 
   net.onError = (code, message) => {
@@ -105,6 +109,7 @@ function bootstrap() {
     if (moveQueue.length === 0) return;
     const next = moveQueue.shift();
     if (!next) return;
+    overlay.log(`Passo: (${next.x},${next.y}) fila=${moveQueue.length}`);
     world.setTarget(world.localId, next);
     net.sendMove(next);
   }, MOVE_INTERVAL_MS);
