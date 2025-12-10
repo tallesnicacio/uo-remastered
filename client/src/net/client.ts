@@ -27,6 +27,10 @@ export class NetClient {
   onTargetAck?: (entityId: string, name: string) => void;
 
   connect() {
+    if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
+      console.warn("Socket já conectado/conectando");
+      return;
+    }
     this.socket = new WebSocket(this.url);
 
     this.socket.onopen = () => {

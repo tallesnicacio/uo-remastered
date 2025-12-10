@@ -63,6 +63,7 @@
 - SessionStore persiste em disco (`server/data/sessions.json`); comando `/save` disponível.
 - Shutdown salva sessões automaticamente.
 - UI de login: nome de personagem via formulário antes de conectar.
+- NetClient evita reconexão quando já conectado/conectando (reúso de sessão).
 
 ## Próximos Passos Sugeridos
  - Expandir autenticação/identidade (persistir sessions) e mapear entidade por WebSocket no servidor.
