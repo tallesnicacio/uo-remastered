@@ -112,6 +112,14 @@ function bootstrap() {
       net.send({ type: "ping", nonce: Date.now() });
       return;
     }
+    if (text.startsWith("/kill ")) {
+      const [, targetId] = text.split(" ");
+      if (targetId) {
+        net.sendKill(targetId);
+        overlay.log(`[você]: kill ${targetId}`);
+      }
+      return;
+    }
     net.sendChat(text);
     overlay.log(`[você]: ${text}`);
   };

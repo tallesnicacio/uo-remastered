@@ -73,6 +73,11 @@ export function parseClientMessage(raw: string | ArrayBuffer | Uint8Array): Clie
             return { type: "move", position: (data as { position: Position }).position };
           }
           break;
+        case "kill":
+          if (typeof (data as { entityId?: unknown }).entityId === "string") {
+            return { type: "kill", entityId: (data as { entityId: string }).entityId };
+          }
+          break;
         default:
           return null;
       }

@@ -60,6 +60,10 @@ export class NetClient {
     this.send({ type: "chat", text });
   }
 
+  sendKill(entityId: string) {
+    this.send({ type: "kill", entityId });
+  }
+
   sendMove(position: Position) {
     this.pendingMoves.push(position);
     this.send({ type: "move", position });
