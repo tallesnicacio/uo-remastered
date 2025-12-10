@@ -30,7 +30,8 @@ export class World {
   }
 
   upsertEntity(id: string, name: string, position: Position) {
-    this.entities.set(id, { id, name, position, target: position });
+    const existing = this.entities.get(id);
+    this.entities.set(id, { id, name, position, target: position, stats: existing?.stats });
   }
 
   updatePosition(id: string, position: Position) {
@@ -56,6 +57,11 @@ export class World {
   getLocalPosition(): Position | null {
     if (!this.localId) return null;
     return this.getPosition(this.localId);
+  }
+
+  getLocalStats(): EntityStats | null {
+    if (!this.localId) return null;
+    return this.entities.get(this.localId)?.stats ?? null;
   }
 
   findEntityAt(tileX: number, tileY: number): Entity | null {
@@ -95,6 +101,16 @@ export class World {
   applySnapshot(entities: Array<{ id: string; name: string; position: Position }>) {
     entities.forEach((e) => {
       this.upsertEntity(e.id, e.name, e.position);
+      const entity = this.entities.get(e.id);
+      if (entity) {
+        entity.stats = entity.stats ?? {
+          hp: 80,
+          hpMax: 100,
+          mana: 50,
+          manaMax: 80,
+          level: 1
+        };
+      }
     });
   }
 

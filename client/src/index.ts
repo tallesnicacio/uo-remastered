@@ -48,13 +48,14 @@ function bootstrap() {
   net.onLogin = (session) => {
     world.setLocal(session.playerId, session.name, session.position);
     renderer.setWorld(world);
-    hud.update({
+    const stats = world.getLocalStats() ?? {
       hp: 80,
       hpMax: 100,
       mana: 50,
       manaMax: 80,
       level: 1
-    });
+    };
+    hud.update(stats);
   };
 
   net.onSpawn = (entity) => {
