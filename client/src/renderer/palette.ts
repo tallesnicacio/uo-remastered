@@ -8,4 +8,5 @@ export class Palette {
   readonly avatarShadow = "#b7a06d";
   readonly outline = "#2b2b2b";
   readonly background = "#0f0f13";
+  readonly select = "#ffc857";
 }

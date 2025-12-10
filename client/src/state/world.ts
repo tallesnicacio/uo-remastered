@@ -44,4 +44,13 @@ export class World {
     if (!this.localId) return null;
     return this.getPosition(this.localId);
   }
+
+  findEntityAt(tileX: number, tileY: number): Entity | null {
+    for (const entity of this.entities.values()) {
+      if (Math.round(entity.position.x) === tileX && Math.round(entity.position.y) === tileY) {
+        return entity;
+      }
+    }
+    return null;
+  }
 }

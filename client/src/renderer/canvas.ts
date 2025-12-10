@@ -7,6 +7,7 @@ type Renderer = {
   setWorld: (world: World) => void;
   onRightClick: (handler: (pos: Position) => void) => void;
   onLeftClick: (handler: (pos: Position) => void) => void;
+  highlight: (pos: Position | null) => void;
 };
 
 const TILE = 32;
@@ -44,6 +45,7 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
   let camera: Position = { x: 0, y: 0, map: "Felucca" };
   let rightHandler: ((pos: Position) => void) | null = null;
   let leftHandler: ((pos: Position) => void) | null = null;
+  let selected: Position | null = null;
 
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -98,6 +100,14 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
       ctx.fillStyle = palette.outline;
       ctx.fillText(entity.name, entity.x * TILE + 4, entity.y * TILE + TILE - 4);
     });
+
+    if (selected) {
+      const sx = (selected.x - camera.x + CENTER_X) * TILE;
+      const sy = (selected.y - camera.y + CENTER_Y) * TILE;
+      ctx.strokeStyle = palette.select;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(sx + 2, sy + 2, TILE - 4, TILE - 4);
+    }
   };
 
   const render = () => {
@@ -140,6 +150,9 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     },
     onLeftClick(handler: (pos: Position) => void) {
       leftHandler = handler;
+    },
+    highlight(pos: Position | null) {
+      selected = pos;
     }
   };
 }

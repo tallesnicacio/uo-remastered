@@ -77,10 +77,18 @@ function bootstrap() {
     if (!world.localId) return;
     world.setTarget(world.localId, pos);
     net.sendMove(pos);
+    renderer.highlight(pos);
   });
 
   renderer.onLeftClick((pos) => {
-    console.log("Left click at", pos);
+    const hit = world.findEntityAt(Math.round(pos.x), Math.round(pos.y));
+    if (hit) {
+      renderer.highlight(hit.position);
+      console.log(`Selecionado: ${hit.name} (${hit.id})`);
+    } else {
+      renderer.highlight(pos);
+      console.log("Clique em terreno", pos);
+    }
   });
 }
 
