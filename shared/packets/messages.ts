@@ -35,6 +35,14 @@ export type ClientKill = {
   entityId: string;
 };
 
+export type EntityStatsWire = {
+  hp: number;
+  hpMax: number;
+  mana: number;
+  manaMax: number;
+  level: number;
+};
+
 export type ClientMove = {
   type: "move";
   position: Position;
@@ -81,6 +89,7 @@ export type ServerSpawn = {
   entityId: string;
   name: string;
   position: Position;
+  stats?: EntityStatsWire;
   dead?: boolean;
 };
 
@@ -107,6 +116,7 @@ export type ServerSnapshot = {
     id: string;
     name: string;
     position: Position;
+    stats?: EntityStatsWire;
     dead?: boolean;
   }>;
 };

@@ -59,7 +59,7 @@ function bootstrap() {
   };
 
   net.onSpawn = (entity) => {
-    world.upsertEntity(entity.entityId, entity.name, entity.position);
+    world.upsertEntity(entity.entityId, entity.name, entity.position, entity.stats);
   };
 
   net.onMove = (entityId, position) => {

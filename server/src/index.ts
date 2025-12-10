@@ -11,7 +11,7 @@ const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 const clients = new Set<WebSocket>();
 const identities = new Map<WebSocket, { sessionId: string; entityId: string; name: string }>();
-const entities = new Map<string, { name: string; position: Position; dead?: boolean }>();
+const entities = new Map<string, { name: string; position: Position; dead?: boolean; stats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number } }>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
 const blocked = new Set<string>((collision.blocked as [number, number][]).map(([x, y]) => `${x},${y}`));
@@ -23,6 +23,14 @@ const startPosition = (): Position => ({
   z: 0,
   map: config.players.startMap,
   facing: 0
+});
+
+const baseStats = () => ({
+  hp: 100,
+  hpMax: 100,
+  mana: 60,
+  manaMax: 60,
+  level: 1
 });
 
 const server = Bun.serve<WebSocket>({
@@ -73,7 +81,7 @@ const server = Bun.serve<WebSocket>({
       const bindSession = (sessionId: string, entityId: string, name: string, position: Position) => {
         identities.set(ws, { sessionId, entityId, name });
         sessions.updatePosition(sessionId, position);
-        entities.set(entityId, { name, position });
+        entities.set(entityId, { name, position, stats: baseStats() });
         console.log(`[login] ${name} (${entityId})`);
       };
 
@@ -175,7 +183,8 @@ function sendSnapshot() {
     entities: [...entities.entries()].map(([id, data]) => ({
       id,
       name: data.name,
-      position: data.position
+      position: data.position,
+      stats: data.stats
     }))
   } satisfies ServerMessage;
 

@@ -29,9 +29,9 @@ export class World {
     this.upsertEntity(id, name, position);
   }
 
-  upsertEntity(id: string, name: string, position: Position) {
+  upsertEntity(id: string, name: string, position: Position, stats?: EntityStats) {
     const existing = this.entities.get(id);
-    this.entities.set(id, { id, name, position, target: position, stats: existing?.stats });
+    this.entities.set(id, { id, name, position, target: position, stats: stats ?? existing?.stats });
   }
 
   updatePosition(id: string, position: Position) {
@@ -98,19 +98,11 @@ export class World {
     this.obstacles.clear();
   }
 
-  applySnapshot(entities: Array<{ id: string; name: string; position: Position }>) {
+  applySnapshot(
+    entities: Array<{ id: string; name: string; position: Position; stats?: EntityStats }>
+  ) {
     entities.forEach((e) => {
-      this.upsertEntity(e.id, e.name, e.position);
-      const entity = this.entities.get(e.id);
-      if (entity) {
-        entity.stats = entity.stats ?? {
-          hp: 80,
-          hpMax: 100,
-          mana: 50,
-          manaMax: 80,
-          level: 1
-        };
-      }
+      this.upsertEntity(e.id, e.name, e.position, e.stats);
     });
   }
 
