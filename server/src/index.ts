@@ -154,6 +154,8 @@ let lastTick = performance.now();
 const tickInterval = 1000 / TICK_RATE;
 const snapshotInterval = 1000;
 let lastSnapshot = performance.now();
+const HP_REGEN_PER_SEC = 1;
+const MANA_REGEN_PER_SEC = 1.5;
 
 function tick() {
   const now = performance.now();
@@ -164,6 +166,8 @@ function tick() {
   if (Math.round(now / 1000) % 5 === 0) {
     console.debug(`[tick] Δ=${delta.toFixed(2)}ms`);
   }
+
+  regenStats(delta);
 
   if (now - lastSnapshot >= snapshotInterval) {
     sendSnapshot();
@@ -200,5 +204,14 @@ function sendSnapshot() {
     } catch (err) {
       console.warn("[snapshot] erro ao enviar", err);
     }
+  }
+}
+
+function regenStats(deltaMs: number) {
+  const factor = deltaMs / 1000;
+  for (const [, data] of entities) {
+    if (!data.stats) continue;
+    data.stats.hp = Math.min(data.stats.hpMax, data.stats.hp + HP_REGEN_PER_SEC * factor);
+    data.stats.mana = Math.min(data.stats.manaMax, data.stats.mana + MANA_REGEN_PER_SEC * factor);
   }
 }

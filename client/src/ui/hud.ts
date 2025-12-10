@@ -52,9 +52,9 @@ export class Hud {
   }
 
   update(stats: EntityStats) {
-    this.hpEl.textContent = `HP: ${stats.hp}/${stats.hpMax}`;
+    this.hpEl.textContent = `HP: ${Math.floor(stats.hp)}/${stats.hpMax}`;
     this.hpBar.style.width = `${Math.max(0, Math.min(1, stats.hp / stats.hpMax)) * 100}%`;
-    this.manaEl.textContent = `Mana: ${stats.mana}/${stats.manaMax}`;
+    this.manaEl.textContent = `Mana: ${Math.floor(stats.mana)}/${stats.manaMax}`;
     this.manaBar.style.width = `${Math.max(0, Math.min(1, stats.mana / stats.manaMax)) * 100}%`;
     this.levelEl.textContent = `Nível: ${stats.level}`;
     if (stats.exp !== undefined && stats.expMax) {
