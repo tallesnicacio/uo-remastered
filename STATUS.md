@@ -58,6 +58,13 @@
 - Server regen: HP/Mana regeneram automaticamente no tick e refletem nos snapshots.
 - Server persiste stats na sessão ao mover/logar e reutiliza stats ao relogar.
 - Stamina incluída em stats; HUD mostra barra de stamina e server regenera stamina.
+
+## MVP Atual (resumo rápido)
+- Servidor Bun com WebSocket: login, ping, chat, target, kill, move (validação de mapa/colisão), snapshots e despawn.
+- Sessão persiste posição/stats em memória; regen de HP/Mana/Stamina no tick.
+- Cliente Canvas/Electron: render com sombras/anim, seleção, pathfinding A*, fila de passos, highlight de destino/erro.
+- UI: overlay com log/status/ping, tooltip de inspeção, chat, HUD com barras de HP/Mana/Stamina/EXP, marcador de destino.
+- Comandos: `/ping`, `/who`, `/kill <id>`; clique direito move; clique esquerdo inspeciona/target.
 - Kill zera HP/Mana e snapshot acusa morte (HUD reage ao HP zero).
 - Snapshot/spawn carregam stats (simples) e HUD usa `getLocalStats`.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).

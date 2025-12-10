@@ -13,4 +13,9 @@
 - No automated test suite is present; validate changes by running the server with `make debug` (or `_windebug.bat`) and exercising the affected system in-game. For spawn/config changes, load into a local world and watch the console for warnings or serialization errors. Include reproduction steps and observed results in your change notes.
 
 ## Commit & Pull Request Guidelines
-- Use concise, imperative commit subjects similar to repo history (`Regained linux compability`, `readme fix`). Optional scope prefixes are welcome (`Scripts: fix pet res`). For PRs, include: clear summary, linked issue/feature, configuration impacts (`Config/*.cfg`), data migrations affecting saves, and manual test notes (commands used, areas visited). Attach screenshots/Gumps output only when UI-facing behavior changes. Keep diffs tight and avoid committing private keys or server addresses from `Config/`.
+- Use concise, imperative commit subjects similar to repo history (`Regained linux compability`, `readme fix`). Optional scope prefixes are welcome (`Scripts: fix pet res`). Para PRs, inclua: resumo, issue/feature link, impacto de configs (`Config/*.cfg`), migrations de dados/saves, e testes manuais (comandos/áreas). Prints/Gumps apenas para mudanças de UI. Não commitar segredos.
+
+## Progresso Atual (MVP)
+- Servidor Bun: login/ping/chat/target/kill/move com validação de mapa/colisão; snapshots periódicos; regen de HP/Mana/Stamina; persistência de sessão (memória).
+- Cliente: Canvas renderer com sombras/animação, pathfinding A* com fila de passos, seleção/tooltip, overlay/log/status, chat, HUD (HP/Mana/Stamina/EXP), feedback visual de erro.
+- Comandos: `/ping`, `/who`, `/kill <id>`; clique direito move (fila), clique esquerdo inspeciona/target.
