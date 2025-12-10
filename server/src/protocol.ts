@@ -18,6 +18,7 @@ type DispatchContext = {
   requireLogin: boolean;
   isWalkable: (x: number, y: number) => boolean;
   listPlayers: () => Array<{ id: string; name: string }>;
+  findEntity: (entityId: string) => { id: string; name: string; position: Position } | null;
 };
 
 const decoder = new TextDecoder();
@@ -164,6 +165,19 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         position: msg.position
       });
       return;
+    case "target": {
+      if (ctx.requireLogin && !ctx.entityId) {
+        ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de usar target." });
+        return;
+      }
+      const found = ctx.findEntity(msg.entityId);
+      if (!found) {
+        ctx.send({ type: "error", code: "invalid_target", message: "Alvo não encontrado." });
+        return;
+      }
+      ctx.send({ type: "target_ack", entityId: found.id, name: found.name });
+      return;
+    }
     default:
       ctx.send({
         type: "error",

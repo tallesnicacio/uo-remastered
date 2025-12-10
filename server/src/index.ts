@@ -98,7 +98,12 @@ const server = Bun.serve<WebSocket>({
           }
           return !blocked.has(`${Math.round(x)},${Math.round(y)}`);
         },
-        listPlayers: () => [...entities.entries()].map(([id, data]) => ({ id, name: data.name }))
+        listPlayers: () => [...entities.entries()].map(([id, data]) => ({ id, name: data.name })),
+        findEntity: (entityId) => {
+          const ent = entities.get(entityId);
+          if (!ent) return null;
+          return { id: entityId, name: ent.name, position: ent.position };
+        }
       });
     },
     close(ws) {

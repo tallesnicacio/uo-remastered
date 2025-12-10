@@ -25,12 +25,17 @@ export type ClientChat = {
   text: string;
 };
 
+export type ClientTarget = {
+  type: "target";
+  entityId: string;
+};
+
 export type ClientMove = {
   type: "move";
   position: Position;
 };
 
-export type ClientMessage = ClientHello | ClientLogin | ClientPing | ClientChat | ClientMove;
+export type ClientMessage = ClientHello | ClientLogin | ClientPing | ClientChat | ClientMove | ClientTarget;
 
 // Mensagens servidor -> cliente
 export type ServerWelcome = {
@@ -84,6 +89,12 @@ export type ServerDespawn = {
   entityId: string;
 };
 
+export type ServerTargetAck = {
+  type: "target_ack";
+  entityId: string;
+  name: string;
+};
+
 export type ServerSnapshot = {
   type: "snapshot";
   entities: Array<{
@@ -102,4 +113,5 @@ export type ServerMessage =
   | ServerSpawn
   | ServerEntityMove
   | ServerDespawn
+  | ServerTargetAck
   | ServerSnapshot;

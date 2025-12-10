@@ -187,6 +187,7 @@ function bootstrap() {
         hit.name,
         [`HP ${stats.hp}/${stats.hpMax}`, `Mana ${stats.mana}/${stats.manaMax}`, `Nível ${stats.level}`, `Dist: ${dist}`]
       );
+      net.send({ type: "target", entityId: hit.id });
     } else {
       renderer.highlight(pos);
       overlay.log(`Terreno em (${Math.round(pos.x)},${Math.round(pos.y)})`);
