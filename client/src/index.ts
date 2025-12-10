@@ -66,7 +66,7 @@ function bootstrap() {
       exp: 0,
       expMax: 100
     };
-    hud.update(stats);
+    hud.update({ ...stats, role: session.role });
   };
 
   net.onSpawn = (entity) => {

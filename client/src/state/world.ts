@@ -20,6 +20,7 @@ export type EntityStats = {
   title?: string;
   exp?: number;
   expMax?: number;
+  role?: string;
 };
 
 export class World {

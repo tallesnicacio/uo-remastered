@@ -257,6 +257,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de usar kill." });
         return;
       }
+      if (ctx.currentRole && ["Owner", "Admin"].includes(ctx.currentRole)) {
+        ctx.send({ type: "error", code: "forbidden", message: "Owner/Admin não podem usar kill." });
+        return;
+      }
       const result = ctx.killEntity(msg.entityId);
       if (!result) {
         ctx.send({ type: "error", code: "invalid_target", message: "Alvo não encontrado." });

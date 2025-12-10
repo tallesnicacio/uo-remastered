@@ -11,6 +11,7 @@ export class Hud {
   private levelEl: HTMLDivElement;
   private expBar: HTMLDivElement;
   private expEl: HTMLDivElement;
+  private roleEl: HTMLDivElement;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
@@ -35,6 +36,7 @@ export class Hud {
     this.levelEl = document.createElement("div");
     this.expBar = document.createElement("div");
     this.expEl = document.createElement("div");
+    this.roleEl = document.createElement("div");
 
     this.container.appendChild(this.hpEl);
     this.container.appendChild(this.makeBarContainer(this.hpBar, "#6bc46b"));
@@ -43,6 +45,7 @@ export class Hud {
     this.container.appendChild(this.staminaEl);
     this.container.appendChild(this.makeBarContainer(this.staminaBar, "#c4b36b"));
     this.container.appendChild(this.levelEl);
+    this.container.appendChild(this.roleEl);
     this.container.appendChild(this.expEl);
     this.container.appendChild(this.makeBarContainer(this.expBar, "#f5c542"));
 
@@ -77,6 +80,9 @@ export class Hud {
     } else {
       this.expEl.textContent = "EXP: -";
       this.expBar.style.width = "0%";
+    }
+    if ((stats as { role?: string }).role) {
+      this.roleEl.textContent = `Role: ${(stats as { role: string }).role}`;
     }
   }
 
