@@ -86,4 +86,8 @@ export class World {
       return { x, y };
     });
   }
+
+  clearObstacles() {
+    this.obstacles.clear();
+  }
 }

@@ -10,6 +10,7 @@ const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 const clients = new Set<WebSocket>();
 const identities = new Map<WebSocket, { sessionId: string; entityId: string; name: string }>();
+const entities = new Map<string, { name: string; position: Position }>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
 
@@ -68,6 +69,7 @@ const server = Bun.serve<WebSocket>({
       const bindSession = (sessionId: string, entityId: string, name: string, position: Position) => {
         identities.set(ws, { sessionId, entityId, name });
         sessions.updatePosition(sessionId, position);
+        entities.set(entityId, { name, position });
       };
 
       handleClientMessage(parsed, {
