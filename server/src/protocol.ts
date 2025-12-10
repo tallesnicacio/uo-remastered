@@ -20,8 +20,23 @@ type DispatchContext = {
   listPlayers: () => Array<{ id: string; name: string }>;
   findEntity: (entityId: string) => { id: string; name: string; position: Position } | null;
   killEntity: (entityId: string) => { id: string; name: string } | null;
-  saveStats: (sessionId: string, stats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number; exp: number; expMax: number }) => void;
-  currentStats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number; exp: number; expMax: number } | null;
+  saveStats: (
+    sessionId: string,
+    stats: { hp: number; hpMax: number; mana: number; manaMax: number; stamina: number; staminaMax: number; level: number; exp: number; expMax: number }
+  ) => void;
+  currentStats:
+    | {
+        hp: number;
+        hpMax: number;
+        mana: number;
+        manaMax: number;
+        stamina: number;
+        staminaMax: number;
+        level: number;
+        exp: number;
+        expMax: number;
+      }
+    | null;
 };
 
 const decoder = new TextDecoder();

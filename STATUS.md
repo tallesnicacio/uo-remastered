@@ -68,7 +68,7 @@
 - Kill zera HP/Mana e snapshot acusa morte (HUD reage ao HP zero).
 - Snapshot/spawn carregam stats (simples) e HUD usa `getLocalStats`.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
-- Tooling: flat config `eslint.config.js` (TS) + `.prettierrc`; lint rodando limpo.
+- Tooling: flat config `eslint.config.js` (TS) + `.prettierrc`; lint rodando limpo. Typecheck (`tsc`) executa sem erros após ajustes de stamina e tipos Bun.
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
 
 ## Próximos Passos Sugeridos

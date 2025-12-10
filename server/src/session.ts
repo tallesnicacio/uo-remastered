@@ -10,6 +10,8 @@ export type Session = {
     hpMax: number;
     mana: number;
     manaMax: number;
+    stamina: number;
+    staminaMax: number;
     level: number;
     exp: number;
     expMax: number;

@@ -43,6 +43,8 @@ export type EntityStatsWire = {
   stamina: number;
   staminaMax: number;
   level: number;
+  exp: number;
+  expMax: number;
 };
 
 export type ClientMove = {

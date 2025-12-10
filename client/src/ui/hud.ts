@@ -53,7 +53,11 @@ export class Hud {
       hpMax: 100,
       mana: 30,
       manaMax: 60,
-      level: 5
+      stamina: 80,
+      staminaMax: 100,
+      level: 5,
+      exp: 0,
+      expMax: 100
     });
   }
 

@@ -54,7 +54,11 @@ function bootstrap() {
       hpMax: 100,
       mana: 50,
       manaMax: 80,
-      level: 1
+      stamina: 100,
+      staminaMax: 100,
+      level: 1,
+      exp: 0,
+      expMax: 100
     };
     hud.update(stats);
   };

@@ -1,4 +1,4 @@
-import type { ClientMessage, ServerMessage } from "@shared/packets/messages";
+import type { ClientMessage, ServerMessage, EntityStatsWire } from "@shared/packets/messages";
 import type { Position } from "@shared/types/position";
 
 type WelcomeInfo = { motd: string; tickRate: number };
@@ -16,7 +16,7 @@ export class NetClient {
 
   onWelcome?: (info: WelcomeInfo) => void;
   onLogin?: (info: LoginInfo) => void;
-  onSpawn?: (payload: { entityId: string; name: string; position: Position }) => void;
+  onSpawn?: (payload: { entityId: string; name: string; position: Position; stats?: EntityStatsWire }) => void;
   onMove?: (entityId: string, position: Position) => void;
   onChat?: (from: string, text: string) => void;
   onReconcile?: (position: Position) => void;

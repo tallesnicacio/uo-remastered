@@ -5,12 +5,14 @@ import type { ServerMessage } from "@shared/packets/messages";
 import { GAME_NAME } from "@shared/constants/runtime";
 import type { Position } from "@shared/types/position";
 import collision from "../data/collision.json";
+import type { ServerWebSocket } from "bun";
 
 const config = loadConfig();
 const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
-const clients = new Set<WebSocket>();
-const identities = new Map<WebSocket, { sessionId: string; entityId: string; name: string }>();
+type WS = ServerWebSocket<unknown>;
+const clients = new Set<WS>();
+const identities = new Map<WS, { sessionId: string; entityId: string; name: string }>();
 type EntityState = {
   name: string;
   position: Position;
@@ -44,7 +46,7 @@ const baseStats = () => ({
   expMax: 100
 });
 
-const server = Bun.serve<WebSocket>({
+const server = Bun.serve({
   port: PORT,
   fetch(req, srv) {
     if (srv.upgrade(req)) {
@@ -92,8 +94,8 @@ const server = Bun.serve<WebSocket>({
       const bindSession = (sessionId: string, entityId: string, name: string, position: Position) => {
         identities.set(ws, { sessionId, entityId, name });
         sessions.updatePosition(sessionId, position);
-        const existingStats = sessions.get(sessionId)?.stats;
-        entities.set(entityId, { name, position, stats: existingStats ?? baseStats() });
+        const existingStats = sessions.get(sessionId)?.stats ?? baseStats();
+        entities.set(entityId, { name, position, stats: existingStats });
         console.log(`[login] ${name} (${entityId})`);
       };
 
