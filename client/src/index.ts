@@ -12,6 +12,7 @@ import { Hud } from "./ui/hud";
 import { LoginForm } from "./ui/login";
 import { Inventory } from "./state/inventory";
 import { InventoryPanel } from "./ui/inventory";
+import { ActionPanel } from "./ui/actions";
 import type { Position } from "@shared/types/position";
 import mapData from "../data/map.json";
 import type { MapData } from "./types/map";
@@ -46,6 +47,7 @@ function bootstrap() {
   const hud = new Hud(root);
   const inventoryPanel = new InventoryPanel(root);
   const login = new LoginForm(root);
+  new ActionPanel(root, (action) => overlay.log(`Ação: ${action}`));
 
   world.setObstacles(mapData.blocked.map(([x, y]) => ({ x, y })));
   renderer.setObstacles(world.getObstacles());
