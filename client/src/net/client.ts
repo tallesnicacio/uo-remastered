@@ -64,7 +64,7 @@ export class NetClient {
     this.send({ type: "move", position });
   }
 
-  private send(msg: ClientMessage) {
+  send(msg: ClientMessage) {
     if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
     this.socket.send(JSON.stringify(msg));
   }

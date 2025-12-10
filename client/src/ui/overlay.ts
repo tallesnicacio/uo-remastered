@@ -5,6 +5,7 @@ export class Overlay {
   private tooltipEl: HTMLDivElement;
   private logLines: string[] = [];
   private maxLines = 6;
+  private statusEl: HTMLDivElement;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
@@ -52,6 +53,18 @@ export class Overlay {
     tooltip.style.visibility = "hidden";
     this.container.appendChild(tooltip);
     this.tooltipEl = tooltip;
+
+    this.statusEl = document.createElement("div");
+    this.statusEl.style.position = "absolute";
+    this.statusEl.style.top = "12px";
+    this.statusEl.style.right = "12px";
+    this.statusEl.style.background = "rgba(0,0,0,0.3)";
+    this.statusEl.style.padding = "6px 10px";
+    this.statusEl.style.borderRadius = "6px";
+    this.statusEl.style.fontSize = "12px";
+    this.statusEl.style.lineHeight = "16px";
+    this.statusEl.textContent = "Conectando...";
+    root.appendChild(this.statusEl);
   }
 
   log(message: string) {
@@ -73,5 +86,9 @@ export class Overlay {
 
   hideTooltip() {
     this.tooltipEl.style.visibility = "hidden";
+  }
+
+  setStatus(text: string) {
+    this.statusEl.textContent = text;
   }
 }

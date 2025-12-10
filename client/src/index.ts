@@ -35,6 +35,7 @@ function bootstrap() {
   net.onWelcome = (info) => {
     console.info(`MOTD: ${info.motd}, tickRate=${info.tickRate}`);
     net.login(`anon-${Math.floor(Math.random() * 9999)}`);
+    overlay.setStatus("Conectado");
   };
 
   net.onLogin = (session) => {
@@ -58,6 +59,7 @@ function bootstrap() {
 
   net.onSnapshot = (entities) => {
     world.applySnapshot(entities);
+    overlay.setStatus(`Conectado | Entidades: ${entities.length}`);
   };
 
   net.onError = (code, message) => {
@@ -73,6 +75,7 @@ function bootstrap() {
 
   net.onPong = (latency) => {
     overlay.log(`Ping: ${latency}ms`);
+    overlay.setStatus(`Conectado | Ping: ${latency}ms`);
   };
 
   net.onChat = (from, text) => {
@@ -86,6 +89,10 @@ function bootstrap() {
   net.connect();
 
   chat.onSend = (text) => {
+    if (text === "/ping") {
+      net.send({ type: "ping", nonce: Date.now() });
+      return;
+    }
     net.sendChat(text);
     overlay.log(`[você]: ${text}`);
   };
