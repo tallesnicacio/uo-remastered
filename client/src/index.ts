@@ -8,6 +8,7 @@ import { aStarPath } from "./pathfinding";
 import { Overlay } from "./ui/overlay";
 import { demoObstacles } from "./data/obstacles";
 import { ChatBox } from "./ui/chat";
+import { Hud } from "./ui/hud";
 
 const VERSION = "0.1.0";
 let moveQueue: Position[] = [];
@@ -33,6 +34,7 @@ function bootstrap() {
   const net = new NetClient(`ws://localhost:2593`, VERSION);
   const overlay = new Overlay(root);
   const chat = new ChatBox(root);
+  const hud = new Hud(root);
 
   world.setObstacles(demoObstacles);
   renderer.setObstacles(world.getObstacles());
@@ -46,6 +48,13 @@ function bootstrap() {
   net.onLogin = (session) => {
     world.setLocal(session.playerId, session.name, session.position);
     renderer.setWorld(world);
+    hud.update({
+      hp: 80,
+      hpMax: 100,
+      mana: 50,
+      manaMax: 80,
+      level: 1
+    });
   };
 
   net.onSpawn = (entity) => {
