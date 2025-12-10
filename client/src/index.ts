@@ -162,6 +162,11 @@ function bootstrap() {
       }
       return;
     }
+    if (text === "/save") {
+      net.send({ type: "save" });
+      overlay.log("Solicitado save ao servidor");
+      return;
+    }
     net.sendChat(text);
     overlay.log(`[você]: ${text}`);
   };

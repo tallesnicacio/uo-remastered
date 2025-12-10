@@ -37,6 +37,7 @@ type DispatchContext = {
         expMax: number;
       }
     | null;
+  saveAll: () => boolean;
 };
 
 const decoder = new TextDecoder();
@@ -163,6 +164,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         from: ctx.entityName ?? "anon",
         text: msg.text
       });
+      return;
+    case "save":
+      ctx.saveAll();
+      ctx.send({ type: "chat", from: "server", text: "Sessões salvas." });
       return;
     case "move":
       if (ctx.requireLogin && !ctx.entityId) {

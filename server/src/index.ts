@@ -135,7 +135,8 @@ const server = Bun.serve({
           return { id: entityId, name: ent.name };
         },
         saveStats: (sessionId, stats) => sessions.updateStats(sessionId, stats),
-        currentStats: identity?.entityId ? entities.get(identity.entityId)?.stats ?? null : null
+        currentStats: identity?.entityId ? entities.get(identity.entityId)?.stats ?? null : null,
+        saveAll: () => sessions.saveAll()
       });
     },
     close(ws) {

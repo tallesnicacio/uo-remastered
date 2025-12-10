@@ -59,12 +59,14 @@ export class SessionStore {
     }
   }
 
-  private persist() {
+  persist(): boolean {
     const data = JSON.stringify([...this.sessions.values()], null, 2);
     try {
       writeFileSync(this.filePath, data, "utf8");
+      return true;
     } catch (err) {
       console.warn("[sessions] erro ao salvar", err);
+      return false;
     }
   }
 
@@ -78,5 +80,9 @@ export class SessionStore {
     } catch (err) {
       console.warn("[sessions] erro ao carregar", err);
     }
+  }
+
+  saveAll() {
+    return this.persist();
   }
 }
