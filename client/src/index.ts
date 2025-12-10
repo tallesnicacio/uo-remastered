@@ -10,6 +10,8 @@ import { demoObstacles } from "./data/obstacles";
 import { ChatBox } from "./ui/chat";
 import { Hud } from "./ui/hud";
 import { LoginForm } from "./ui/login";
+import { Inventory } from "./state/inventory";
+import { InventoryPanel } from "./ui/inventory";
 import type { Position } from "@shared/types/position";
 import mapData from "../data/map.json";
 import type { MapData } from "./types/map";
@@ -22,6 +24,7 @@ const MAP_HEIGHT = 12;
 let lastSnapshotCount = 0;
 let playerName = "";
 let playerPassword = "1234";
+const inventory = new Inventory();
 
 function bootstrap() {
   console.info(`[${GAME_NAME}] Client bootstrap`);
@@ -41,6 +44,7 @@ function bootstrap() {
   const overlay = new Overlay(root);
   const chat = new ChatBox(root);
   const hud = new Hud(root);
+  const inventoryPanel = new InventoryPanel(root);
   const login = new LoginForm(root);
 
   world.setObstacles(mapData.blocked.map(([x, y]) => ({ x, y })));
@@ -70,6 +74,7 @@ function bootstrap() {
     };
     hud.update({ ...stats, role: session.role });
     login.setRole(session.role);
+    inventoryPanel.render(inventory.getItems());
   };
 
   net.onSpawn = (entity) => {
@@ -190,6 +195,15 @@ function bootstrap() {
     if (text === "/respawn") {
       net.send({ type: "respawn" });
       overlay.log("Solicitado respawn");
+      return;
+    }
+    if (text.startsWith("/give ")) {
+      const [, item] = text.split(" ");
+      if (item) {
+        inventory.addItem(item, 1);
+        inventoryPanel.render(inventory.getItems());
+        overlay.log(`Item adicionado: ${item}`);
+      }
       return;
     }
     net.sendChat(text);
