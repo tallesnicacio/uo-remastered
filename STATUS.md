@@ -48,6 +48,7 @@
 - Target: clique esquerdo envia `target` ao servidor; server responde `target_ack` ou erro.
 - Cliente exibe ack de target no overlay.
 - Kill: comando/handler `kill` remove entidade e broadcast de despawn + mensagem.
+- Cliente loga despawn recebido no overlay.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).

@@ -95,6 +95,7 @@ function bootstrap() {
 
   net.onDespawn = (entityId) => {
     world.removeEntity(entityId);
+    overlay.log(`Despawn: ${entityId}`);
   };
 
   net.onTargetAck = (entityId, name) => {
