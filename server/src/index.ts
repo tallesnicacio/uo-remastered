@@ -15,7 +15,7 @@ type EntityState = {
   name: string;
   position: Position;
   dead?: boolean;
-  stats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number; exp: number; expMax: number };
+  stats: { hp: number; hpMax: number; mana: number; manaMax: number; stamina: number; staminaMax: number; level: number; exp: number; expMax: number };
 };
 
 const entities = new Map<string, EntityState>();
@@ -37,6 +37,8 @@ const baseStats = () => ({
   hpMax: 100,
   mana: 60,
   manaMax: 60,
+  stamina: 100,
+  staminaMax: 100,
   level: 1,
   exp: 0,
   expMax: 100
@@ -165,6 +167,7 @@ const snapshotInterval = 1000;
 let lastSnapshot = performance.now();
 const HP_REGEN_PER_SEC = 1;
 const MANA_REGEN_PER_SEC = 1.5;
+const STAMINA_REGEN_PER_SEC = 2;
 
 function tick() {
   const now = performance.now();
@@ -222,5 +225,6 @@ function regenStats(deltaMs: number) {
     if (!data.stats) continue;
     data.stats.hp = Math.min(data.stats.hpMax, data.stats.hp + HP_REGEN_PER_SEC * factor);
     data.stats.mana = Math.min(data.stats.manaMax, data.stats.mana + MANA_REGEN_PER_SEC * factor);
+    data.stats.stamina = Math.min(data.stats.staminaMax, data.stats.stamina + STAMINA_REGEN_PER_SEC * factor);
   }
 }

@@ -14,6 +14,8 @@ export type EntityStats = {
   hpMax: number;
   mana: number;
   manaMax: number;
+  stamina: number;
+  staminaMax: number;
   level: number;
   title?: string;
   exp?: number;

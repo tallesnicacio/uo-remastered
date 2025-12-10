@@ -57,6 +57,7 @@
 - EXP: stats incluem exp/expMax e HUD exibe barra de experiência.
 - Server regen: HP/Mana regeneram automaticamente no tick e refletem nos snapshots.
 - Server persiste stats na sessão ao mover/logar e reutiliza stats ao relogar.
+- Stamina incluída em stats; HUD mostra barra de stamina e server regenera stamina.
 - Kill zera HP/Mana e snapshot acusa morte (HUD reage ao HP zero).
 - Snapshot/spawn carregam stats (simples) e HUD usa `getLocalStats`.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).

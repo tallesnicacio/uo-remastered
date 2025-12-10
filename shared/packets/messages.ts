@@ -40,6 +40,8 @@ export type EntityStatsWire = {
   hpMax: number;
   mana: number;
   manaMax: number;
+  stamina: number;
+  staminaMax: number;
   level: number;
 };
 

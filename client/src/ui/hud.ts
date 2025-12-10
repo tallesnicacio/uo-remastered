@@ -6,6 +6,8 @@ export class Hud {
   private hpBar: HTMLDivElement;
   private manaEl: HTMLDivElement;
   private manaBar: HTMLDivElement;
+  private staminaEl: HTMLDivElement;
+  private staminaBar: HTMLDivElement;
   private levelEl: HTMLDivElement;
   private expBar: HTMLDivElement;
   private expEl: HTMLDivElement;
@@ -28,6 +30,8 @@ export class Hud {
     this.hpBar = document.createElement("div");
     this.manaEl = document.createElement("div");
     this.manaBar = document.createElement("div");
+    this.staminaEl = document.createElement("div");
+    this.staminaBar = document.createElement("div");
     this.levelEl = document.createElement("div");
     this.expBar = document.createElement("div");
     this.expEl = document.createElement("div");
@@ -36,6 +40,8 @@ export class Hud {
     this.container.appendChild(this.makeBarContainer(this.hpBar, "#6bc46b"));
     this.container.appendChild(this.manaEl);
     this.container.appendChild(this.makeBarContainer(this.manaBar, "#6b7bc4"));
+    this.container.appendChild(this.staminaEl);
+    this.container.appendChild(this.makeBarContainer(this.staminaBar, "#c4b36b"));
     this.container.appendChild(this.levelEl);
     this.container.appendChild(this.expEl);
     this.container.appendChild(this.makeBarContainer(this.expBar, "#f5c542"));
@@ -56,6 +62,10 @@ export class Hud {
     this.hpBar.style.width = `${Math.max(0, Math.min(1, stats.hp / stats.hpMax)) * 100}%`;
     this.manaEl.textContent = `Mana: ${Math.floor(stats.mana)}/${stats.manaMax}`;
     this.manaBar.style.width = `${Math.max(0, Math.min(1, stats.mana / stats.manaMax)) * 100}%`;
+    this.staminaEl.textContent = `Stamina: ${Math.floor(stats.stamina ?? 0)}/${stats.staminaMax ?? 0}`;
+    const staminaPct =
+      stats.staminaMax && stats.staminaMax > 0 ? Math.max(0, Math.min(1, (stats.stamina ?? 0) / stats.staminaMax)) : 0;
+    this.staminaBar.style.width = `${staminaPct * 100}%`;
     this.levelEl.textContent = `Nível: ${stats.level}`;
     if (stats.exp !== undefined && stats.expMax) {
       this.expEl.textContent = `EXP: ${stats.exp}/${stats.expMax}`;
