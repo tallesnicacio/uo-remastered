@@ -14,6 +14,7 @@ export class MiniMap {
   private mapData?: MapData;
   private palette: Palette;
   private preRendered: HTMLCanvasElement | null = null;
+  private destination: Position | null = null;
 
   constructor(root: HTMLElement, palette: Palette, mapData?: MapData) {
     this.palette = palette;
@@ -58,6 +59,11 @@ export class MiniMap {
     this.render();
   }
 
+  setDestination(pos: Position | null) {
+    this.destination = pos;
+    this.render();
+  }
+
   private preRenderMap() {
     if (!this.mapData) return;
     const base = document.createElement("canvas");
@@ -90,6 +96,11 @@ export class MiniMap {
       }
     }
 
+    if (this.mapData.blocked) {
+      ctx.fillStyle = "rgba(112, 62, 41, 0.6)";
+      this.mapData.blocked.forEach(([bx, by]) => ctx.fillRect(bx, by, 1, 1));
+    }
+
     this.preRendered = base;
   }
 
@@ -106,6 +117,13 @@ export class MiniMap {
     const scaleX = this.mapData ? this.canvas.width / this.mapData.width : 1;
     const scaleY = this.mapData ? this.canvas.height / this.mapData.height : 1;
 
+    // Faixa externa de leitura rápida
+    this.ctx.strokeStyle = "rgba(10,10,10,0.8)";
+    this.ctx.lineWidth = 6;
+    this.ctx.beginPath();
+    this.ctx.arc(this.radius, this.radius, this.radius - 3, 0, Math.PI * 2);
+    this.ctx.stroke();
+
     // Outros jogadores/NPCs
     this.ctx.fillStyle = "rgba(230,225,215,0.8)";
     this.entities.forEach((e) => {
@@ -114,6 +132,14 @@ export class MiniMap {
       this.ctx.arc(e.x * scaleX + 2, e.y * scaleY + 2, 3, 0, Math.PI * 2);
       this.ctx.fill();
     });
+
+    if (this.destination && (!this.mapData || this.destination.map === this.worldPos.map)) {
+      this.ctx.strokeStyle = "rgba(102, 194, 255, 0.9)";
+      this.ctx.lineWidth = 2;
+      this.ctx.beginPath();
+      this.ctx.arc(this.destination.x * scaleX + 2, this.destination.y * scaleY + 2, 5, 0, Math.PI * 2);
+      this.ctx.stroke();
+    }
 
     // Indicador do jogador
     this.ctx.fillStyle = "#f5c542";
@@ -127,5 +153,20 @@ export class MiniMap {
     this.ctx.beginPath();
     this.ctx.arc(this.radius, this.radius, this.radius - 2, 0, Math.PI * 2);
     this.ctx.stroke();
+
+    this.drawCompass();
+  }
+
+  private drawCompass() {
+    const labels = [
+      { t: "N", x: this.radius, y: 12 },
+      { t: "S", x: this.radius, y: this.canvas.height - 4 },
+      { t: "W", x: 10, y: this.radius + 4 },
+      { t: "E", x: this.canvas.width - 12, y: this.radius + 4 }
+    ];
+    this.ctx.fillStyle = "#f5e2ba";
+    this.ctx.font = "bold 12px Georgia, serif";
+    this.ctx.textAlign = "center";
+    labels.forEach((l) => this.ctx.fillText(l.t, l.x, l.y));
   }
 }

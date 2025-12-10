@@ -60,23 +60,23 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
   let obstacles: Array<{ x: number; y: number }> = [];
   let errorPos: { pos: Position; ttl: number } | null = null;
   const map = mapData;
-  const mapColor = (x: number, y: number): string => {
+  const mapTile = (x: number, y: number): "grass" | "sand" | "water" | "stone" | "dirt" => {
     if (!map || !map.tiles) {
-      return (x + y) % 2 === 0 ? palette.grass : palette.dirt;
+      return (x + y) % 2 === 0 ? "grass" : "dirt";
     }
     const row = map.tiles[y] ?? "";
     const tile = row[x] ?? "g";
     switch (tile) {
       case "g":
-        return palette.grass;
+        return "grass";
       case "s":
-        return palette.sand;
+        return "sand";
       case "w":
-        return palette.water;
+        return "water";
       case "r":
-        return palette.stone;
+        return "stone";
       default:
-        return palette.dirt;
+        return "dirt";
     }
   };
 
@@ -97,31 +97,42 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     ctx.fillRect(Math.floor(x * TILE), Math.floor(y * TILE), TILE, TILE);
   };
 
-  const drawTexturedTile = (x: number, y: number, base: string, accent: string, density = 0.12) => {
-    drawTile(x, y, base);
-    const startX = Math.floor(x * TILE);
-    const startY = Math.floor(y * TILE);
-    const dots = Math.floor(TILE * TILE * density);
-    ctx.fillStyle = accent;
+  const createTexturePattern = (base: string, accent: string, density: number) => {
+    const buffer = document.createElement("canvas");
+    buffer.width = 16;
+    buffer.height = 16;
+    const bctx = buffer.getContext("2d");
+    if (!bctx) return null;
+    bctx.fillStyle = base;
+    bctx.fillRect(0, 0, buffer.width, buffer.height);
+    const dots = Math.floor(buffer.width * buffer.height * density);
+    bctx.fillStyle = accent;
     for (let i = 0; i < dots; i++) {
-      const dx = startX + Math.floor(Math.random() * TILE);
-      const dy = startY + Math.floor(Math.random() * TILE);
-      ctx.fillRect(dx, dy, 1, 1);
+      const dx = Math.floor(Math.random() * buffer.width);
+      const dy = Math.floor(Math.random() * buffer.height);
+      bctx.fillRect(dx, dy, 1, 1);
     }
+    return ctx.createPattern(buffer, "repeat");
+  };
+
+  const patterns = {
+    grass: createTexturePattern(palette.grass, "#54673c", 0.06),
+    sand: createTexturePattern(palette.sand, "#b89c64", 0.05),
+    water: createTexturePattern(palette.water, "#2e4d7f", 0.03),
+    stone: createTexturePattern(palette.stone, "#5e6672", 0.07),
+    dirt: createTexturePattern(palette.dirt, "#7a5c38", 0.05)
   };
 
   const drawGround = () => {
     for (let y = 0; y < gridH; y++) {
       for (let x = 0; x < gridW; x++) {
-        const color = mapColor(x, y);
-        if (color === palette.stone) {
-          drawTexturedTile(x, y, palette.stone, "#5e6672", 0.08);
-        } else if (color === palette.sand) {
-          drawTexturedTile(x, y, palette.sand, "#b89c64", 0.06);
-        } else if (color === palette.water) {
-          drawTexturedTile(x, y, palette.water, "#2e4d7f", 0.04);
+        const tile = mapTile(x, y);
+        const pattern = patterns[tile] ?? null;
+        if (pattern) {
+          ctx.fillStyle = pattern;
+          ctx.fillRect(Math.floor(x * TILE), Math.floor(y * TILE), TILE, TILE);
         } else {
-          drawTexturedTile(x, y, color, "#54673c", 0.05);
+          drawTile(x, y, palette.grass);
         }
       }
     }

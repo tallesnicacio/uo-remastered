@@ -105,6 +105,7 @@ function bootstrap() {
       if (world.localId && last) {
         world.updatePosition(world.localId, last);
         renderer.markDestination(null);
+        minimap.setDestination(null);
         moveQueue = [];
       }
       if (renderer && moveQueue.length > 0) {
@@ -141,6 +142,7 @@ function bootstrap() {
     overlay.log(`Despawn: ${entityId}`);
     // Se o jogador local estava movendo, limpar destino/seleção
     renderer.markDestination(null);
+    minimap.setDestination(null);
     moveQueue = [];
   };
 
@@ -275,12 +277,14 @@ function bootstrap() {
     rightTarget = pos;
     renderer.highlight(pos);
     renderer.markDestination(pos);
+    minimap.setDestination(pos);
   });
 
   renderer.onLeftClick((pos) => {
     rightHold = false;
     moveQueue = [];
     renderer.markDestination(null);
+    minimap.setDestination(null);
     const hit = world.findEntityAt(Math.round(pos.x), Math.round(pos.y));
     if (hit) {
       renderer.highlight(hit.position);
@@ -328,6 +332,7 @@ function bootstrap() {
   renderer.onCursorMove((pos) => {
     if (rightHold) {
       rightTarget = pos;
+      minimap.setDestination(pos);
     }
   });
 }
