@@ -12,20 +12,34 @@ export class Hud {
   private expBar: HTMLDivElement;
   private expEl: HTMLDivElement;
   private roleEl: HTMLDivElement;
+  private portrait: HTMLDivElement;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
     this.container.style.position = "absolute";
     this.container.style.bottom = "12px";
-    this.container.style.right = "12px";
-    this.container.style.background = "rgba(0,0,0,0.35)";
+    this.container.style.right = "140px";
+    this.container.style.background = "rgba(0,0,0,0.4)";
     this.container.style.padding = "10px 12px";
     this.container.style.borderRadius = "8px";
     this.container.style.fontFamily = "Courier New, monospace";
     this.container.style.color = "#e0e0e0";
-    this.container.style.minWidth = "160px";
+    this.container.style.minWidth = "200px";
     this.container.style.fontSize = "12px";
     this.container.style.lineHeight = "16px";
+    this.container.style.boxShadow = "0 0 8px rgba(0,0,0,0.4)";
+
+    this.portrait = document.createElement("div");
+    this.portrait.style.width = "64px";
+    this.portrait.style.height = "64px";
+    this.portrait.style.borderRadius = "8px";
+    this.portrait.style.background = "radial-gradient(circle, #555 0%, #222 80%)";
+    this.portrait.style.marginBottom = "10px";
+    this.portrait.style.display = "flex";
+    this.portrait.style.alignItems = "center";
+    this.portrait.style.justifyContent = "center";
+    this.portrait.textContent = "Avatar";
+    this.portrait.style.fontWeight = "bold";
 
     this.hpEl = document.createElement("div");
     this.hpBar = document.createElement("div");
@@ -38,6 +52,7 @@ export class Hud {
     this.expEl = document.createElement("div");
     this.roleEl = document.createElement("div");
 
+    this.container.appendChild(this.portrait);
     this.container.appendChild(this.hpEl);
     this.container.appendChild(this.makeBarContainer(this.hpBar, "#6bc46b"));
     this.container.appendChild(this.manaEl);
