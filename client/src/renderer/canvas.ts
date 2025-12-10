@@ -10,6 +10,7 @@ type Renderer = {
   highlight: (pos: Position | null) => void;
   markDestination: (pos: Position | null) => void;
   setObstacles: (coords: Array<{ x: number; y: number }>) => void;
+  flashError: (pos: Position) => void;
 };
 
 const TILE = 32;
@@ -52,6 +53,7 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
   let selected: Position | null = null;
   let destination: Position | null = null;
   let obstacles: Array<{ x: number; y: number }> = [];
+  let errorPos: { pos: Position; ttl: number } | null = null;
 
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -137,6 +139,19 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
       ctx.arc(dx + TILE / 2, dy + TILE / 2, TILE / 3, 0, Math.PI * 2);
       ctx.stroke();
     }
+
+    if (errorPos) {
+      errorPos.ttl -= delta;
+      if (errorPos.ttl <= 0) {
+        errorPos = null;
+      } else {
+        const ex = (errorPos.pos.x - camera.x + CENTER_X) * TILE;
+        const ey = (errorPos.pos.y - camera.y + CENTER_Y) * TILE;
+        ctx.strokeStyle = palette.error;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(ex + 2, ey + 2, TILE - 4, TILE - 4);
+      }
+    }
   };
 
   const render = () => {
@@ -188,6 +203,9 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     },
     setObstacles(coords: Array<{ x: number; y: number }>) {
       obstacles = coords;
+    },
+    flashError(pos: Position) {
+      errorPos = { pos, ttl: 700 };
     }
   };
 }

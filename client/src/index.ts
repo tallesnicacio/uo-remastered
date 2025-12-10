@@ -81,6 +81,10 @@ function bootstrap() {
         renderer.markDestination(null);
         moveQueue = [];
       }
+      if (renderer && moveQueue.length > 0) {
+        const lastPos = moveQueue[moveQueue.length - 1];
+        renderer.flashError(lastPos);
+      }
     }
   };
 
@@ -158,6 +162,7 @@ function bootstrap() {
     if (!world.localId) return;
     if (pos.x < 0 || pos.y < 0 || pos.x >= MAP_WIDTH || pos.y >= MAP_HEIGHT) {
       overlay.log("Destino fora do mapa");
+      renderer.flashError(pos);
       return;
     }
     const current = world.getLocalPosition();
@@ -165,6 +170,7 @@ function bootstrap() {
     const path = aStarPath(current, pos, (x, y) => world.isWalkable(x, y));
     if (!path.ok || path.path.length === 0) {
       overlay.log("Destino inalcançável");
+      renderer.flashError(pos);
       return;
     }
     renderer.highlight(pos);

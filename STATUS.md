@@ -50,6 +50,7 @@
 - Kill: comando/handler `kill` remove entidade e broadcast de despawn + mensagem.
 - Cliente loga despawn recebido no overlay e limpa destino/fila ao despawn.
 - Chat aceita `/kill <id>` que envia `ClientKill` ao servidor (handler presente).
+- Renderer: flash vermelho ao clicar destino inválido/bloqueado; fila limpa em erro.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
