@@ -62,6 +62,7 @@
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
 - SessionStore persiste em disco (`server/data/sessions.json`); comando `/save` disponível.
 - Shutdown salva sessões automaticamente.
+- UI de login: nome de personagem via formulário antes de conectar.
 
 ## Próximos Passos Sugeridos
  - Expandir autenticação/identidade (persistir sessions) e mapear entidade por WebSocket no servidor.

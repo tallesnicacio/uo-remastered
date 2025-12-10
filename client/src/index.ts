@@ -9,6 +9,7 @@ import { Overlay } from "./ui/overlay";
 import { demoObstacles } from "./data/obstacles";
 import { ChatBox } from "./ui/chat";
 import { Hud } from "./ui/hud";
+import { LoginForm } from "./ui/login";
 import type { Position } from "@shared/types/position";
 
 const VERSION = "0.1.0";
@@ -17,6 +18,7 @@ const MOVE_INTERVAL_MS = 150;
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 12;
 let lastSnapshotCount = 0;
+let playerName = "";
 
 function bootstrap() {
   console.info(`[${GAME_NAME}] Client bootstrap`);
@@ -36,13 +38,15 @@ function bootstrap() {
   const overlay = new Overlay(root);
   const chat = new ChatBox(root);
   const hud = new Hud(root);
+  const login = new LoginForm(root);
 
   world.setObstacles(demoObstacles);
   renderer.setObstacles(world.getObstacles());
 
   net.onWelcome = (info) => {
     console.info(`MOTD: ${info.motd}, tickRate=${info.tickRate}`);
-    net.login(`anon-${Math.floor(Math.random() * 9999)}`);
+    const name = playerName || `anon-${Math.floor(Math.random() * 9999)}`;
+    net.login(name);
     overlay.setStatus("Conectado");
   };
 
@@ -148,6 +152,11 @@ function bootstrap() {
   };
 
   net.connect();
+
+  login.onSubmit = (name) => {
+    playerName = name;
+    net.connect();
+  };
 
   chat.onSend = (text) => {
     if (text === "/ping") {
