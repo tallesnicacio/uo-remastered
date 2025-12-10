@@ -60,6 +60,13 @@ function bootstrap() {
 
   net.onError = (code, message) => {
     overlay.log(`[erro] ${code}: ${message}`);
+    if (code === "blocked_tile") {
+      const last = net.getLastServerPosition();
+      if (world.localId && last) {
+        world.updatePosition(world.localId, last);
+        renderer.markDestination(null);
+      }
+    }
   };
 
   net.onChat = (from, text) => {
@@ -93,8 +100,11 @@ function bootstrap() {
     if (!world.localId) return;
     const current = world.getLocalPosition();
     if (!current) return;
-    // walkable stub: tudo é walkable por enquanto
     const path = aStarPath(current, pos, (x, y) => world.isWalkable(x, y));
+    if (!path.ok || path.path.length === 0) {
+      overlay.log("Destino inalcançável");
+      return;
+    }
     renderer.highlight(pos);
     renderer.markDestination(pos);
 

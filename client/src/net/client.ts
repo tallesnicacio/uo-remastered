@@ -41,6 +41,10 @@ export class NetClient {
     };
   }
 
+  getLastServerPosition(): Position | null {
+    return this.lastServerPosition;
+  }
+
   login(name: string) {
     this.send({
       type: "login",
