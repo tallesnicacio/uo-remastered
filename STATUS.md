@@ -7,71 +7,25 @@
 
 ## Comandos úteis (raiz)
 - `bun run dev` — servidor com watch (`server/src/index.ts`).
-- `bun run dev:client` — client placeholder com watch.
+- `bun run dev:client` — client com watch (`client/src/index.ts`).
 - `bun run dev:both` — server + client em paralelo.
 - `bun run build` — build do servidor para `dist/server`.
 - `bun run build:client` — build do client para `dist/client`.
-- `bun test` — test runner do Bun (sem testes ainda).
+- `bun run desktop:dev` — abre client via Electron (desktop).
+- `bun test` — sem suites ainda, retorna “No tests found”.
 - `bunx eslint .` / `bunx prettier --write .` / `bunx tsc --noEmit` — lint/format/typecheck (deps ainda não instaladas).
 
 ## Estado Atual
-- Protocolos: `shared/packets/messages.ts` define mensagens hello/login/ping/chat/move; `shared/index.ts` exporta constantes e pacotes.
-- Configs: exemplos em `server/config/server.json`, `players.json`, `combat.json`.
-- Server: `server/src/index.ts` carrega configs, exige login para chat/move, mapeia identidade/sessão por WebSocket, cria/restaura sessão (sessionId), responde welcome/pong/login/spawn/move; tick loop 20 t/s.
-- Server protocolo: `server/src/protocol.ts` com parse/handler (hello/login/ping/chat/move), validação básica de payloads/posição, gate de login e criação/restauração de sessão; `sessionId` agora carrega `entityId` consistente e atualiza posição no move.
-- Client: renderer Canvas com múltiplos layers e sprites procedurais (`client/src/renderer/canvas.ts`, `renderer/palette.ts`, `renderer/sprites.ts`); `client/src/index.ts` integra renderer, world state e input.
-- Shared: constantes em `shared/constants/runtime.ts`; DTOs e tipos de posição em `shared/packets/messages.ts` e `shared/types/position.ts`.
-- Rede cliente: `client/src/net/client.ts` implementa hello/login/ping/chat/move e callbacks.
-- Estado cliente: `client/src/state/world.ts` mantém entidades, posição local e alvo para interpolação; renderer faz smoothing de movimento. Netcode faz reconciliação básica removendo pendentes e aplicando posição do servidor.
-- Controles: clique direito move o player com câmera centrada; clique esquerdo reservado para interações futuras. Renderer converte coordenadas de tela para mundo.
-- Seletor: clique esquerdo destaca tile/entidade e desenha retângulo de seleção.
-- Inspeção: clique esquerdo mostra info básica (id/nome/pos) em overlay (`client/src/ui/overlay.ts`).
-- Destino: clique direito marca destino com highlight circular.
-- Pathfinding: A* simples em `client/src/pathfinding.ts` (grid, 4 direções) usando função `isWalkable`; obstáculos demo em `client/src/data/obstacles.ts` renderizados como blocos.
-- Snapshots: servidor mantém mapa de entidades e envia snapshot periódico (1s); cliente aplica snapshot via `NetClient.onSnapshot` e `World.applySnapshot`.
-- Colisão servidor: mapa `server/data/collision.json`; servidor bloqueia movimentos em tiles ocupados e retorna erro `blocked_tile`.
-- Cliente exibe erros de server (ex.: `blocked_tile`) no overlay.
-- Cliente valida caminho; se inalcançável ou bloqueado, não move localmente e limpa destino ao receber erro.
-- Overlay agora possui tooltip e detalhes simulados no clique esquerdo.
-- Login broadcast: servidor envia login_ok e spawn para todos (via broadcast do login message).
-- Renderer: animação só avança quando há movimento; sombras sob os sprites; tooltip mostra distância ao alvo.
-- Despawn: servidor envia `despawn` ao desconectar; cliente remove entidade ao receber.
-- Chat: input simples em `client/src/ui/chat.ts`; mensagens aparecem no overlay.
-- Ping: `onPong` mostra latência no overlay.
-- Logging: servidor loga conexões/login/desconexão; validação extra para moves inválidos. Overlay agora mantém histórico recente de mensagens.
-- Status UI: overlay mostra ping/conexão e aceita `/ping` no chat para round-trip rápido.
-- Movimento: clique direito agora enfileira todo o caminho A* e envia passos sequenciais a cada 150ms; fila limpa ao receber erro de bloqueio.
-- Snapshot limpa fila local se player não for encontrado; overlay loga cada passo enviado.
-- Map bounds: server e client validam limites (20x12) e bloqueiam destino fora do mapa.
-- Status mostra contagem de entidades do último snapshot e tamanho da fila de passos.
-- Chat server: comando `/who` retorna contagem e nomes online.
-- Target: clique esquerdo envia `target` ao servidor; server responde `target_ack` ou erro.
-- Cliente exibe ack de target no overlay.
-- Kill: comando/handler `kill` remove entidade e broadcast de despawn + mensagem.
-- Cliente loga despawn recebido no overlay e limpa destino/fila ao despawn.
-- Chat aceita `/kill <id>` que envia `ClientKill` ao servidor (handler presente).
-- Renderer: flash vermelho ao clicar destino inválido/bloqueado; fila limpa em erro.
-- HUD local: `client/src/ui/hud.ts` mostra HP/Mana/Nível (dados simulados no login).
-- HUD usa stats armazenados no world (simulados a partir de snapshots).
-- HUD agora tem barras de HP/Mana e atualiza a cada snapshot.
-- EXP: stats incluem exp/expMax e HUD exibe barra de experiência.
-- Server regen: HP/Mana regeneram automaticamente no tick e refletem nos snapshots.
-- Server persiste stats na sessão ao mover/logar e reutiliza stats ao relogar; SessionStore salva em `server/data/sessions.json`.
-- Stamina incluída em stats; HUD mostra barra de stamina e server regenera stamina.
-- Tooling: flat config `eslint.config.js` (TS) + `.prettierrc`; lint rodando limpo. Typecheck (`tsc`) executa sem erros após ajustes de stamina e tipos Bun.
-- Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
-- SessionStore persiste em disco (`server/data/sessions.json`); comando `/save` disponível.
-- Shutdown salva sessões automaticamente.
-- UI de login: nome de personagem via formulário antes de conectar.
-- Login aceita senha (default 1234) via UI e envia ao servidor (auth stub).
-- Accounts persistidos em `server/data/accounts.json`; login cria conta se não existir e valida senha, comando `/save` mantém stats/sessão.
-- NetClient evita reconexão quando já conectado/conectando (reúso de sessão).
-- Combate: `/attack <id>` aplica dano aleatório e envia `damage` com HP atualizado; proteção: Owner/Admin não podem usar kill; respawn exige estar morto.
-- Inventário server-side: `/give <nome> <item> [qty]` (GM/Admin/Owner) atualiza inventário e envia `inventory`; painel simples no client.
-- Roles persistentes (Owner/Admin/GM/Player); `/role <nome> <Role>` exige Owner/Admin e altera conta/sessão; HUD/login mostram role.
+- Protocolos: `shared/packets/messages.ts` cobre hello/login/ping/chat/move/target/attack/inventory/role/kill/save/respawn/damage; tipos compartilhados em `shared/types`.
+- Server: WebSocket Bun com validação de colisão/mapa, comandos `/who` `/ping` `/kill` (restrito) `/role` (Owner/Admin) `/give`, `/save`, `/respawn`, `/attack`; regen de HP/Mana/Stamina; persistência de contas/sessões em disco (`server/data/*.json`); roles Owner/Admin/GM/Player.
+- Client: canvas com tiles texturizados, múltiplos layers, sprites do avatar com sombra; câmera centrada no player; HUD gump (HP/Mana/Stamina/EXP/role/retrato), painel de ações, overlay/log, chat, inventário simples.
+- Movimento: botão direito segurado move e corre/anda conforme distância; fila de passos A* com reconciliação; setas movem; erro de colisão limpa fila/destino. Esquerdo seleciona alvo; duplo clique interage/ataca. Destino marcado no mapa e minimapa.
+- Minimap: círculo estilizado com bússola, terreno/bloqueios renderizados, marcador de player/entidades e destino.
+- Rede cliente: login com nome/senha (default 1234), prevenção de reconexão duplicada, snapshots periódicos com reconciliação, eventos de dano/inventory/target ack/despawn.
+- Desktop: `bun run desktop:dev` abre Electron usando build do client; `desktop:build` gera pacote Linux x64.
 
 ## Próximos Passos Sugeridos
- - Expandir autenticação/identidade (persistir sessions) e mapear entidade por WebSocket no servidor.
- - Integrar render/anim com dados de rede (exibir múltiplas entidades, prever latência).
- - Rodar lint/format/typecheck quando dependências estiverem instaladas.
- - Empacotar desktop (Electron/Tauri) e melhorar pipeline de assets (layers/sombras/animações).
+ - Completar pipeline de assets (animações, layers extras, novos tilesets) e mapa maior.
+ - Polir UI (gumps adicionais, chat/inventário mais ricos) e adicionar minimapa com zoom/pan.
+ - Testes automatizados básicos (protocolos e validação de colisão) para estabilizar mudanças.
+ - Fortalecer auth (hash de senha, bans, rate-limit) e logs persistentes.
