@@ -40,6 +40,7 @@
 - Ping: `onPong` mostra latência no overlay.
 - Logging: servidor loga conexões/login/desconexão; validação extra para moves inválidos. Overlay agora mantém histórico recente de mensagens.
 - Status UI: overlay mostra ping/conexão e aceita `/ping` no chat para round-trip rápido.
+- Movimento: clique direito agora enfileira todo o caminho A* e envia passos sequenciais a cada 150ms; fila limpa ao receber erro de bloqueio.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).

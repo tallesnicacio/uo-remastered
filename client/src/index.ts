@@ -10,6 +10,8 @@ import { demoObstacles } from "./data/obstacles";
 import { ChatBox } from "./ui/chat";
 
 const VERSION = "0.1.0";
+let moveQueue: Position[] = [];
+const MOVE_INTERVAL_MS = 150;
 
 function bootstrap() {
   console.info(`[${GAME_NAME}] Client bootstrap`);
@@ -69,6 +71,7 @@ function bootstrap() {
       if (world.localId && last) {
         world.updatePosition(world.localId, last);
         renderer.markDestination(null);
+        moveQueue = [];
       }
     }
   };
@@ -96,6 +99,15 @@ function bootstrap() {
     net.sendChat(text);
     overlay.log(`[você]: ${text}`);
   };
+
+  setInterval(() => {
+    if (!world.localId) return;
+    if (moveQueue.length === 0) return;
+    const next = moveQueue.shift();
+    if (!next) return;
+    world.setTarget(world.localId, next);
+    net.sendMove(next);
+  }, MOVE_INTERVAL_MS);
 
   // Input simples: seta movimenta e envia move.
   window.addEventListener("keydown", (ev) => {
@@ -129,10 +141,9 @@ function bootstrap() {
     renderer.highlight(pos);
     renderer.markDestination(pos);
 
-    // Envia somente último ponto por enquanto; caminho completo fica para passo futuro
-    const last = path.path[path.path.length - 1];
-    world.setTarget(world.localId, last);
-    net.sendMove(last);
+    // Enfileira caminho inteiro (ignora primeira posição se for a atual)
+    moveQueue = path.path.slice(1);
+    overlay.log(`Movendo: ${moveQueue.length} passos`);
   });
 
   renderer.onLeftClick((pos) => {
