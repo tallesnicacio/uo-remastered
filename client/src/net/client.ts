@@ -8,6 +8,7 @@ export class NetClient {
   private socket: WebSocket | null = null;
   private sessionId: string | undefined;
   private heartbeat?: number;
+  private pendingMoves: Position[] = [];
 
   constructor(private url: string, private version: string) {}
 
@@ -48,6 +49,7 @@ export class NetClient {
   }
 
   sendMove(position: Position) {
+    this.pendingMoves.push(position);
     this.send({ type: "move", position });
   }
 
@@ -78,6 +80,8 @@ export class NetClient {
         this.onSpawn?.({ entityId: data.entityId, name: data.name, position: data.position });
         return;
       case "entity_move":
+        // Remove da fila de pendingMoves se for do próprio jogador (reconciliação simples)
+        this.pendingMoves.shift();
         this.onMove?.(data.entityId, data.position);
         return;
       case "chat":

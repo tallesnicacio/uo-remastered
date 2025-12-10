@@ -4,6 +4,7 @@ export type Entity = {
   id: string;
   name: string;
   position: Position;
+  target?: Position;
 };
 
 export class World {
@@ -16,13 +17,19 @@ export class World {
   }
 
   upsertEntity(id: string, name: string, position: Position) {
-    this.entities.set(id, { id, name, position });
+    this.entities.set(id, { id, name, position, target: position });
   }
 
   updatePosition(id: string, position: Position) {
     const entity = this.entities.get(id);
     if (!entity) return;
-    this.entities.set(id, { ...entity, position });
+    this.entities.set(id, { ...entity, position, target: position });
+  }
+
+  setTarget(id: string, target: Position) {
+    const entity = this.entities.get(id);
+    if (!entity) return;
+    this.entities.set(id, { ...entity, target });
   }
 
   getEntities(): Entity[] {

@@ -38,7 +38,8 @@ function bootstrap() {
   };
 
   net.onMove = (entityId, position) => {
-    world.updatePosition(entityId, position);
+    // usa target para interpolar
+    world.setTarget(entityId, position);
   };
 
   net.onChat = (from, text) => {
@@ -62,7 +63,7 @@ function bootstrap() {
     if (ev.key === "ArrowRight") next.x += step;
 
     if (next.x !== pos.x || next.y !== pos.y) {
-      world.updatePosition(world.localId, next);
+      world.setTarget(world.localId, next);
       net.sendMove(next);
     }
   });
