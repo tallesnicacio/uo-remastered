@@ -133,10 +133,17 @@ function bootstrap() {
         `Mana: ${stats.mana}/${stats.manaMax}`,
         `Nível: ${stats.level}`
       ]);
+      overlay.showTooltip(
+        pos.x * 32,
+        pos.y * 32,
+        hit.name,
+        [`HP ${stats.hp}/${stats.hpMax}`, `Mana ${stats.mana}/${stats.manaMax}`, `Nível ${stats.level}`]
+      );
     } else {
       renderer.highlight(pos);
       overlay.log(`Terreno em (${Math.round(pos.x)},${Math.round(pos.y)})`);
       overlay.showDetails("Terreno", ["Nenhum alvo"]);
+      overlay.hideTooltip();
     }
   });
 }

@@ -99,20 +99,16 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
 
       ctx.bindSession(session.id, playerId, msg.name, spawnPos);
 
-      ctx.send({
+      const loginMsg: ServerMessage = {
         type: "login_ok",
         playerId,
         name: msg.name,
         position: spawnPos,
         sessionId: session.id
-      });
+      };
 
-      ctx.broadcast({
-        type: "spawn",
-        entityId: playerId,
-        name: msg.name,
-        position: spawnPos
-      });
+      ctx.send(loginMsg);
+      ctx.broadcast(loginMsg);
       return;
     }
     case "ping":

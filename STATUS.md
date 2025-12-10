@@ -32,6 +32,8 @@
 - Colisão servidor: mapa `server/data/collision.json`; servidor bloqueia movimentos em tiles ocupados e retorna erro `blocked_tile`.
 - Cliente exibe erros de server (ex.: `blocked_tile`) no overlay.
 - Cliente valida caminho; se inalcançável ou bloqueado, não move localmente e limpa destino ao receber erro.
+- Overlay agora possui tooltip e detalhes simulados no clique esquerdo.
+- Login broadcast: servidor envia login_ok e spawn para todos (via broadcast do login message).
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).

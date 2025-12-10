@@ -2,6 +2,7 @@ export class Overlay {
   private container: HTMLDivElement;
   private logEl: HTMLDivElement;
   private detailEl: HTMLDivElement;
+  private tooltipEl: HTMLDivElement;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
@@ -36,6 +37,19 @@ export class Overlay {
     detail.style.lineHeight = "16px";
     this.container.appendChild(detail);
     this.detailEl = detail;
+
+    const tooltip = document.createElement("div");
+    tooltip.style.position = "absolute";
+    tooltip.style.pointerEvents = "none";
+    tooltip.style.background = "rgba(0,0,0,0.6)";
+    tooltip.style.border = "1px solid rgba(255,255,255,0.2)";
+    tooltip.style.padding = "6px 8px";
+    tooltip.style.borderRadius = "4px";
+    tooltip.style.fontSize = "12px";
+    tooltip.style.lineHeight = "16px";
+    tooltip.style.visibility = "hidden";
+    this.container.appendChild(tooltip);
+    this.tooltipEl = tooltip;
   }
 
   log(message: string) {
@@ -44,5 +58,16 @@ export class Overlay {
 
   showDetails(title: string, lines: string[]) {
     this.detailEl.innerHTML = `<strong>${title}</strong><br/>` + lines.map((l) => `<div>${l}</div>`).join("");
+  }
+
+  showTooltip(x: number, y: number, title: string, lines: string[]) {
+    this.tooltipEl.style.left = `${x + 12}px`;
+    this.tooltipEl.style.top = `${y + 12}px`;
+    this.tooltipEl.innerHTML = `<strong>${title}</strong><br/>` + lines.map((l) => `<div>${l}</div>`).join("");
+    this.tooltipEl.style.visibility = "visible";
+  }
+
+  hideTooltip() {
+    this.tooltipEl.style.visibility = "hidden";
   }
 }
