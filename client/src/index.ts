@@ -80,6 +80,11 @@ function bootstrap() {
     if (world.localId && !entities.find((e) => e.id === world.localId)) {
       moveQueue = [];
     }
+
+    const localStats = world.getLocalStats();
+    if (localStats) {
+      hud.update(localStats);
+    }
   };
 
   net.onError = (code, message) => {
