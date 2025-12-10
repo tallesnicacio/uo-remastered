@@ -28,14 +28,35 @@ export function makeAvatarSprite(palette: Palette): SpriteFrames {
     const ctx = canvas.getContext("2d");
     if (!ctx) continue;
 
+    // Corpo
     ctx.fillStyle = palette.outline;
-    ctx.fillRect(6, 4, size - 12, size - 8);
+    ctx.fillRect(6, 6, size - 12, size - 10);
 
-    ctx.fillStyle = palette.avatar;
-    ctx.fillRect(8, 6, size - 16, size - 12);
+    // Armadura
+    ctx.fillStyle = "#b0b0b0";
+    ctx.fillRect(8, 8, size - 16, size - 14);
 
-    ctx.fillStyle = i === 0 ? palette.avatarShadow : palette.avatar;
-    ctx.fillRect(size / 2 - 4, size / 2, 8, 6);
+    // Capacete
+    ctx.fillStyle = "#d0d0d0";
+    ctx.fillRect(size / 2 - 5, 2, 10, 8);
+    ctx.fillStyle = palette.outline;
+    ctx.fillRect(size / 2 - 2, 4, 4, 2);
+
+    // Ombreiras
+    ctx.fillStyle = "#c5c5c5";
+    ctx.fillRect(4, 8, 6, 4);
+    ctx.fillRect(size - 10, 8, 6, 4);
+
+    // Botas
+    ctx.fillStyle = "#7a5a3d";
+    ctx.fillRect(8, size - 6, 4, 4);
+    ctx.fillRect(size - 12, size - 6, 4, 4);
+
+    // Arma
+    ctx.fillStyle = "#d1b26f";
+    ctx.fillRect(size / 2 + 6, 10, 3, 12);
+    ctx.fillStyle = "#c4c4c4";
+    ctx.fillRect(size / 2 + 5, 6, 5, 6 + i); // anima levemente o topo
 
     frames.push(canvas);
   }
