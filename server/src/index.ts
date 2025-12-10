@@ -2,6 +2,7 @@ import { handleClientMessage, parseClientMessage } from "./protocol";
 import { loadConfig } from "./config";
 import { SessionStore } from "./session";
 import { AccountStore } from "./accounts";
+import { InventoryStore } from "./inventory";
 import type { ServerMessage } from "@shared/packets/messages";
 import { GAME_NAME } from "@shared/constants/runtime";
 import type { Position } from "@shared/types/position";
@@ -26,6 +27,7 @@ const entities = new Map<string, EntityState>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
 const accounts = new AccountStore();
+const inventories = new InventoryStore();
 const collisionConfig = config.collision ?? collision;
 const blocked = new Set<string>((collisionConfig?.blocked as [number, number][])?.map(([x, y]) => `${x},${y}`) ?? []);
 const mapBounds = { width: collisionConfig?.width ?? 0, height: collisionConfig?.height ?? 0 };
@@ -101,7 +103,15 @@ const server = Bun.serve({
         sessions.updatePosition(sessionId, position);
         const existingStats = sessions.get(sessionId)?.stats ?? baseStats();
         entities.set(entityId, { name, position, stats: existingStats, role });
+        inventories.ensure(entityId);
         console.log(`[login] ${name} (${entityId}) role=${role}`);
+        // Envia inventário ao jogador
+        ws.send(
+          JSON.stringify({
+            type: "inventory",
+            items: inventories.toArray(entityId)
+          } satisfies ServerMessage)
+        );
       };
 
       handleClientMessage(parsed, {
@@ -180,6 +190,25 @@ const server = Bun.serve({
           entities.set(entityId, ent);
           sessions.updateStats(ent.name, ent.stats);
           return { id: entityId, name: ent.name, hp: ent.stats.hp, hpMax: ent.stats.hpMax };
+        },
+        giveItem: (targetName, item, qty) => {
+          for (const [sid, sess] of sessions["sessions"]) {
+            if (sess.name === targetName) {
+              inventories.add(sess.entityId, item, qty);
+              const socket = [...identities.entries()].find(([, v]) => v.entityId === sess.entityId)?.[0];
+              if (socket) {
+                socket.send(
+                  JSON.stringify({
+                    type: "inventory",
+                    items: inventories.toArray(sess.entityId)
+                  } satisfies ServerMessage)
+                );
+              }
+              sessions.saveAll();
+              return true;
+            }
+          }
+          return false;
         }
       });
     },
@@ -188,6 +217,7 @@ const server = Bun.serve({
       const identity = identities.get(ws);
       if (identity) {
         entities.delete(identity.entityId);
+        inventories.removeEntity(identity.entityId);
         const payload: ServerMessage = { type: "despawn", entityId: identity.entityId };
         const msg = JSON.stringify(payload);
         for (const client of clients) {

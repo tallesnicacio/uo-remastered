@@ -55,6 +55,11 @@ export type ClientAttack = {
   type: "attack";
   target: string;
 };
+
+export type InventoryItem = {
+  name: string;
+  qty: number;
+};
 export type EntityStatsWire = {
   hp: number;
   hpMax: number;
@@ -122,6 +127,11 @@ export type ServerDamage = {
   hpMax: number;
 };
 
+export type ServerInventory = {
+  type: "inventory";
+  items: InventoryItem[];
+};
+
 export type ServerError = {
   type: "error";
   code: string;
@@ -176,4 +186,5 @@ export type ServerMessage =
   | ServerDespawn
   | ServerTargetAck
   | ServerSnapshot
-  | ServerDamage;
+  | ServerDamage
+  | ServerInventory;

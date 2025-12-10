@@ -19,4 +19,8 @@ export class Inventory {
   getItems() {
     return [...this.items];
   }
+
+  setItems(items: Array<{ name: string; qty: number }>) {
+    this.items = items.map((i) => ({ ...i, id: crypto.randomUUID() }));
+  }
 }

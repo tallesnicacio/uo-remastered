@@ -43,6 +43,7 @@ type DispatchContext = {
   changeRole: (target: string, role: import("@shared/packets/messages").UserRole) => boolean;
   currentRole?: import("@shared/packets/messages").UserRole;
   applyDamage: (entityId: string, amount: number) => { id: string; name: string; hp: number; hpMax: number } | null;
+  giveItem: (targetName: string, item: string, qty: number) => boolean;
 };
 
 const decoder = new TextDecoder();
@@ -168,6 +169,25 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
           from: "server",
           text: `Online (${players.length}): ${names}`
         });
+        return;
+      }
+      if (msg.text.startsWith("/give ")) {
+        if (ctx.currentRole !== "Owner" && ctx.currentRole !== "Admin" && ctx.currentRole !== "GM") {
+          ctx.send({ type: "error", code: "forbidden", message: "Apenas GM/Admin/Owner podem dar itens." });
+          return;
+        }
+        const [, target, item, qtyStr] = msg.text.split(" ");
+        const qty = qtyStr ? Number(qtyStr) || 1 : 1;
+        if (!target || !item) {
+          ctx.send({ type: "error", code: "invalid_give", message: "Use /give <nome> <item> [qtd]" });
+          return;
+        }
+        const ok = ctx.giveItem(target, item, qty);
+        if (!ok) {
+          ctx.send({ type: "error", code: "invalid_target", message: "Jogador não encontrado para give." });
+          return;
+        }
+        ctx.broadcast({ type: "chat", from: "server", text: `${target} recebeu ${qty}x ${item}` });
         return;
       }
       if (msg.text.startsWith("/role ")) {

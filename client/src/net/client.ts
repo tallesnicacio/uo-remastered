@@ -1,5 +1,6 @@
 import type { ClientMessage, ServerMessage, EntityStatsWire } from "@shared/packets/messages";
 import type { Position } from "@shared/types/position";
+import type { InventoryItem } from "@shared/packets/messages";
 
 type WelcomeInfo = { motd: string; tickRate: number };
 type LoginInfo = { playerId: string; name: string; position: Position; sessionId: string; role: import("@shared/packets/messages").UserRole };
@@ -26,6 +27,7 @@ export class NetClient {
   onPong?: (latencyMs: number) => void;
   onTargetAck?: (entityId: string, name: string) => void;
   onDamage?: (entityId: string, amount: number, hp: number, hpMax: number) => void;
+  onInventory?: (items: InventoryItem[]) => void;
 
   connect() {
     if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
@@ -124,6 +126,9 @@ export class NetClient {
         return;
       case "damage":
         this.onDamage?.(data.entityId, data.amount, data.hp, data.hpMax);
+        return;
+      case "inventory":
+        this.onInventory?.(data.items);
         return;
       case "chat":
         this.onChat?.(data.from, data.text);

@@ -174,6 +174,11 @@ function bootstrap() {
     }
   };
 
+  net.onInventory = (items) => {
+    inventory.setItems(items);
+    inventoryPanel.render(inventory.getItems());
+  };
+
   net.connect();
 
   login.onSubmit = (name, password) => {

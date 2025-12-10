@@ -66,6 +66,9 @@
 - Login aceita senha (default 1234) via UI e envia ao servidor (auth stub).
 - Accounts persistidos em `server/data/accounts.json`; login cria conta se não existir e valida senha, comando `/save` mantém stats/sessão.
 - NetClient evita reconexão quando já conectado/conectando (reúso de sessão).
+- Combate: `/attack <id>` aplica dano aleatório e envia `damage` com HP atualizado; proteção: Owner/Admin não podem usar kill; respawn exige estar morto.
+- Inventário server-side: `/give <nome> <item> [qty]` (GM/Admin/Owner) atualiza inventário e envia `inventory`; painel simples no client.
+- Roles persistentes (Owner/Admin/GM/Player); `/role <nome> <Role>` exige Owner/Admin e altera conta/sessão; HUD/login mostram role.
 
 ## Próximos Passos Sugeridos
  - Expandir autenticação/identidade (persistir sessions) e mapear entidade por WebSocket no servidor.
