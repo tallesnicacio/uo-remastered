@@ -97,11 +97,32 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     ctx.fillRect(Math.floor(x * TILE), Math.floor(y * TILE), TILE, TILE);
   };
 
+  const drawTexturedTile = (x: number, y: number, base: string, accent: string, density = 0.12) => {
+    drawTile(x, y, base);
+    const startX = Math.floor(x * TILE);
+    const startY = Math.floor(y * TILE);
+    const dots = Math.floor(TILE * TILE * density);
+    ctx.fillStyle = accent;
+    for (let i = 0; i < dots; i++) {
+      const dx = startX + Math.floor(Math.random() * TILE);
+      const dy = startY + Math.floor(Math.random() * TILE);
+      ctx.fillRect(dx, dy, 1, 1);
+    }
+  };
+
   const drawGround = () => {
     for (let y = 0; y < gridH; y++) {
       for (let x = 0; x < gridW; x++) {
         const color = mapColor(x, y);
-        drawTile(x, y, color);
+        if (color === palette.stone) {
+          drawTexturedTile(x, y, palette.stone, "#5e6672", 0.08);
+        } else if (color === palette.sand) {
+          drawTexturedTile(x, y, palette.sand, "#b89c64", 0.06);
+        } else if (color === palette.water) {
+          drawTexturedTile(x, y, palette.water, "#2e4d7f", 0.04);
+        } else {
+          drawTexturedTile(x, y, color, "#54673c", 0.05);
+        }
       }
     }
 

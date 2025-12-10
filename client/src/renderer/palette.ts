@@ -1,10 +1,10 @@
 export class Palette {
   // Paleta inspirada em tons UO clássicos com leve modernização
   readonly grass = "#6f8e4b";
-  readonly dirt = "#b08a5c";
-  readonly stone = "#8a8f9c";
-  readonly water = "#3c6ca8";
-  readonly sand = "#c2a56b";
+  readonly dirt = "#9a7a50";
+  readonly stone = "#7a7f8c";
+  readonly water = "#3b5f99";
+  readonly sand = "#c9b07a";
   readonly avatar = "#d4c18f";
   readonly avatarShadow = "#b7a06d";
   readonly outline = "#2b2b2b";
