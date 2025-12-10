@@ -23,6 +23,7 @@ export class NetClient {
   onSnapshot?: (entities: Array<{ id: string; name: string; position: Position }>) => void;
   onError?: (code: string, message: string) => void;
   onDespawn?: (entityId: string) => void;
+  onPong?: (latencyMs: number) => void;
 
   connect() {
     this.socket = new WebSocket(this.url);
@@ -111,6 +112,10 @@ export class NetClient {
         this.onChat?.(data.from, data.text);
         return;
       case "pong":
+        if (this.onPong) {
+          const latency = Date.now() - data.nonce;
+          this.onPong(latency);
+        }
         return;
       case "error":
         console.error(`[server error] ${data.code}: ${data.message}`);
@@ -123,7 +128,8 @@ export class NetClient {
 
   private startHeartbeat() {
     this.heartbeat = setInterval(() => {
-      this.send({ type: "ping", nonce: Date.now() });
+      const now = Date.now();
+      this.send({ type: "ping", nonce: now });
     }, 5000) as unknown as number;
   }
 

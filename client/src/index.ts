@@ -7,6 +7,7 @@ import { NetClient } from "./net/client";
 import { aStarPath } from "./pathfinding";
 import { Overlay } from "./ui/overlay";
 import { demoObstacles } from "./data/obstacles";
+import { ChatBox } from "./ui/chat";
 
 const VERSION = "0.1.0";
 
@@ -26,6 +27,7 @@ function bootstrap() {
   const renderer = createRenderer(root, palette, avatarSprites);
   const net = new NetClient(`ws://localhost:2593`, VERSION);
   const overlay = new Overlay(root);
+  const chat = new ChatBox(root);
 
   world.setObstacles(demoObstacles);
   renderer.setObstacles(world.getObstacles());
@@ -69,8 +71,11 @@ function bootstrap() {
     }
   };
 
+  net.onPong = (latency) => {
+    overlay.log(`Ping: ${latency}ms`);
+  };
+
   net.onChat = (from, text) => {
-    console.log(`[chat] ${from}: ${text}`);
     overlay.log(`[chat] ${from}: ${text}`);
   };
 
@@ -79,6 +84,11 @@ function bootstrap() {
   };
 
   net.connect();
+
+  chat.onSend = (text) => {
+    net.sendChat(text);
+    overlay.log(`[você]: ${text}`);
+  };
 
   // Input simples: seta movimenta e envia move.
   window.addEventListener("keydown", (ev) => {
