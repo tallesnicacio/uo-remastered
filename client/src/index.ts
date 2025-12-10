@@ -74,6 +74,10 @@ function bootstrap() {
     overlay.log(`[chat] ${from}: ${text}`);
   };
 
+  net.onDespawn = (entityId) => {
+    world.removeEntity(entityId);
+  };
+
   net.connect();
 
   // Input simples: seta movimenta e envia move.

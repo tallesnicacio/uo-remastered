@@ -79,6 +79,11 @@ export type ServerEntityMove = {
   position: Position;
 };
 
+export type ServerDespawn = {
+  type: "despawn";
+  entityId: string;
+};
+
 export type ServerSnapshot = {
   type: "snapshot";
   entities: Array<{
@@ -96,4 +101,5 @@ export type ServerMessage =
   | ServerError
   | ServerSpawn
   | ServerEntityMove
+  | ServerDespawn
   | ServerSnapshot;

@@ -22,6 +22,7 @@ export class NetClient {
   onReconcile?: (position: Position) => void;
   onSnapshot?: (entities: Array<{ id: string; name: string; position: Position }>) => void;
   onError?: (code: string, message: string) => void;
+  onDespawn?: (entityId: string) => void;
 
   connect() {
     this.socket = new WebSocket(this.url);
@@ -102,6 +103,9 @@ export class NetClient {
         return;
       case "snapshot":
         this.onSnapshot?.(data.entities);
+        return;
+      case "despawn":
+        this.onDespawn?.(data.entityId);
         return;
       case "chat":
         this.onChat?.(data.from, data.text);

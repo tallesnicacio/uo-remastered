@@ -97,4 +97,8 @@ export class World {
       this.upsertEntity(e.id, e.name, e.position);
     });
   }
+
+  removeEntity(id: string) {
+    this.entities.delete(id);
+  }
 }

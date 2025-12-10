@@ -94,6 +94,19 @@ const server = Bun.serve<WebSocket>({
     },
     close(ws) {
       clients.delete(ws);
+      const identity = identities.get(ws);
+      if (identity) {
+        entities.delete(identity.entityId);
+        const payload: ServerMessage = { type: "despawn", entityId: identity.entityId };
+        const msg = JSON.stringify(payload);
+        for (const client of clients) {
+          try {
+            client.send(msg);
+          } catch (err) {
+            console.warn("[despawn] erro ao enviar", err);
+          }
+        }
+      }
       identities.delete(ws);
     }
   }

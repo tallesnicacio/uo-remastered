@@ -35,6 +35,7 @@
 - Overlay agora possui tooltip e detalhes simulados no clique esquerdo.
 - Login broadcast: servidor envia login_ok e spawn para todos (via broadcast do login message).
 - Renderer: animação só avança quando há movimento; sombras sob os sprites; tooltip mostra distância ao alvo.
+- Despawn: servidor envia `despawn` ao desconectar; cliente remove entidade ao receber.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
