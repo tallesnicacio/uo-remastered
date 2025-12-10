@@ -172,6 +172,14 @@ const server = Bun.serve({
             }
           }
           return false;
+        },
+        applyDamage: (entityId, amount) => {
+          const ent = entities.get(entityId);
+          if (!ent) return null;
+          ent.stats.hp = Math.max(0, ent.stats.hp - amount);
+          entities.set(entityId, ent);
+          sessions.updateStats(ent.name, ent.stats);
+          return { id: entityId, name: ent.name, hp: ent.stats.hp, hpMax: ent.stats.hpMax };
         }
       });
     },

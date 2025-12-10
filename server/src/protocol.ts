@@ -42,6 +42,7 @@ type DispatchContext = {
   respawn: () => { position: Position; stats?: unknown } | null;
   changeRole: (target: string, role: import("@shared/packets/messages").UserRole) => boolean;
   currentRole?: import("@shared/packets/messages").UserRole;
+  applyDamage: (entityId: string, amount: number) => { id: string; name: string; hp: number; hpMax: number } | null;
 };
 
 const decoder = new TextDecoder();
@@ -186,6 +187,20 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
           return;
         }
         ctx.broadcast({ type: "chat", from: "server", text: `${target} agora é ${asRole}` });
+        return;
+      }
+      if (msg.text.startsWith("/attack ")) {
+        const [, target] = msg.text.split(" ");
+        if (!target) {
+          ctx.send({ type: "error", code: "invalid_target", message: "Use /attack <id>" });
+          return;
+        }
+        const res = ctx.applyDamage(target, 10);
+        if (!res) {
+          ctx.send({ type: "error", code: "invalid_target", message: "Alvo não encontrado." });
+          return;
+        }
+        ctx.broadcast({ type: "chat", from: "server", text: `${ctx.entityName ?? "anon"} atingiu ${res.name} (-10 HP)` });
         return;
       }
       ctx.broadcast({

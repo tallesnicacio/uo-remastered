@@ -50,6 +50,11 @@ export type ClientRoleChange = {
   target: string;
   role: UserRole;
 };
+
+export type ClientAttack = {
+  type: "attack";
+  target: string;
+};
 export type EntityStatsWire = {
   hp: number;
   hpMax: number;
@@ -77,7 +82,8 @@ export type ClientMessage =
   | ClientKill
   | ClientSave
   | ClientRespawn
-  | ClientRoleChange;
+  | ClientRoleChange
+  | ClientAttack;
 
 // Mensagens servidor -> cliente
 export type ServerWelcome = {

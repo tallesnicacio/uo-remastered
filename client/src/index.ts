@@ -128,6 +128,7 @@ function bootstrap() {
 
   net.onChat = (from, text) => {
     overlay.log(`[chat] ${from}: ${text}`);
+    // parse damage message? keep log only for now
   };
 
   net.onDespawn = (entityId) => {

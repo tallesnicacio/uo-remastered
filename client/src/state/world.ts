@@ -114,4 +114,11 @@ export class World {
   removeEntity(id: string) {
     this.entities.delete(id);
   }
+
+  applyDamage(id: string, amount: number) {
+    const entity = this.entities.get(id);
+    if (!entity || !entity.stats) return;
+    entity.stats.hp = Math.max(0, entity.stats.hp - amount);
+    this.entities.set(id, entity);
+  }
 }
