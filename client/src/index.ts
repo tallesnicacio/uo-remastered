@@ -96,6 +96,9 @@ function bootstrap() {
   net.onDespawn = (entityId) => {
     world.removeEntity(entityId);
     overlay.log(`Despawn: ${entityId}`);
+    // Se o jogador local estava movendo, limpar destino/seleção
+    renderer.markDestination(null);
+    moveQueue = [];
   };
 
   net.onTargetAck = (entityId, name) => {
