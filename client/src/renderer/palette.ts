@@ -10,4 +10,5 @@ export class Palette {
   readonly background = "#0f0f13";
   readonly select = "#ffc857";
   readonly destination = "#66c2ff";
+  readonly obstacle = "#3d2b20";
 }

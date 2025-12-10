@@ -5,12 +5,23 @@ export type Entity = {
   name: string;
   position: Position;
   target?: Position;
+  stats?: EntityStats;
+};
+
+export type EntityStats = {
+  hp: number;
+  hpMax: number;
+  mana: number;
+  manaMax: number;
+  level: number;
+  title?: string;
 };
 
 export class World {
   private entities = new Map<string, Entity>();
   localId: string | null = null;
   private walkableFn: (x: number, y: number) => boolean = () => true;
+  private obstacles = new Set<string>();
 
   setLocal(id: string, name: string, position: Position) {
     this.localId = id;
@@ -60,6 +71,19 @@ export class World {
   }
 
   isWalkable(x: number, y: number): boolean {
+    const key = `${Math.round(x)},${Math.round(y)}`;
+    if (this.obstacles.has(key)) return false;
     return this.walkableFn(x, y);
+  }
+
+  setObstacles(coords: Array<{ x: number; y: number }>) {
+    coords.forEach((c) => this.obstacles.add(`${c.x},${c.y}`));
+  }
+
+  getObstacles(): Array<{ x: number; y: number }> {
+    return [...this.obstacles].map((k) => {
+      const [x, y] = k.split(",").map(Number);
+      return { x, y };
+    });
   }
 }

@@ -27,7 +27,7 @@
 - Seletor: clique esquerdo destaca tile/entidade e desenha retângulo de seleção.
 - Inspeção: clique esquerdo mostra info básica (id/nome/pos) em overlay (`client/src/ui/overlay.ts`).
 - Destino: clique direito marca destino com highlight circular.
-- Pathfinding: A* simples em `client/src/pathfinding.ts` (grid, 4 direções) usando função `isWalkable` (stub atual).
+- Pathfinding: A* simples em `client/src/pathfinding.ts` (grid, 4 direções) usando função `isWalkable`; obstáculos demo em `client/src/data/obstacles.ts` renderizados como blocos.
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
 

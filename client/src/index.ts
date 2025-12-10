@@ -6,6 +6,7 @@ import { World } from "./state/world";
 import { NetClient } from "./net/client";
 import { aStarPath } from "./pathfinding";
 import { Overlay } from "./ui/overlay";
+import { demoObstacles } from "./data/obstacles";
 
 const VERSION = "0.1.0";
 
@@ -25,6 +26,9 @@ function bootstrap() {
   const renderer = createRenderer(root, palette, avatarSprites);
   const net = new NetClient(`ws://localhost:2593`, VERSION);
   const overlay = new Overlay(root);
+
+  world.setObstacles(demoObstacles);
+  renderer.setObstacles(world.getObstacles());
 
   net.onWelcome = (info) => {
     console.info(`MOTD: ${info.motd}, tickRate=${info.tickRate}`);
@@ -97,9 +101,24 @@ function bootstrap() {
     if (hit) {
       renderer.highlight(hit.position);
       overlay.log(`Selecionado: ${hit.name} (${hit.id}) @ (${hit.position.x},${hit.position.y})`);
+      const stats = hit.stats ?? {
+        hp: 50,
+        hpMax: 100,
+        mana: 30,
+        manaMax: 60,
+        level: 5,
+        title: "Viajante"
+      };
+      overlay.showDetails(hit.name, [
+        stats.title ?? "",
+        `HP: ${stats.hp}/${stats.hpMax}`,
+        `Mana: ${stats.mana}/${stats.manaMax}`,
+        `Nível: ${stats.level}`
+      ]);
     } else {
       renderer.highlight(pos);
       overlay.log(`Terreno em (${Math.round(pos.x)},${Math.round(pos.y)})`);
+      overlay.showDetails("Terreno", ["Nenhum alvo"]);
     }
   });
 }

@@ -1,6 +1,7 @@
 export class Overlay {
   private container: HTMLDivElement;
   private logEl: HTMLDivElement;
+  private detailEl: HTMLDivElement;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
@@ -23,9 +24,25 @@ export class Overlay {
     log.style.lineHeight = "18px";
     this.container.appendChild(log);
     this.logEl = log;
+
+    const detail = document.createElement("div");
+    detail.style.background = "rgba(0,0,0,0.3)";
+    detail.style.padding = "8px 10px";
+    detail.style.borderRadius = "6px";
+    detail.style.maxWidth = "360px";
+    detail.style.minHeight = "24px";
+    detail.style.marginTop = "8px";
+    detail.style.fontSize = "12px";
+    detail.style.lineHeight = "16px";
+    this.container.appendChild(detail);
+    this.detailEl = detail;
   }
 
   log(message: string) {
     this.logEl.textContent = message;
+  }
+
+  showDetails(title: string, lines: string[]) {
+    this.detailEl.innerHTML = `<strong>${title}</strong><br/>` + lines.map((l) => `<div>${l}</div>`).join("");
   }
 }

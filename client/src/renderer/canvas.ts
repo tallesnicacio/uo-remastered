@@ -9,6 +9,7 @@ type Renderer = {
   onLeftClick: (handler: (pos: Position) => void) => void;
   highlight: (pos: Position | null) => void;
   markDestination: (pos: Position | null) => void;
+  setObstacles: (coords: Array<{ x: number; y: number }>) => void;
 };
 
 const TILE = 32;
@@ -48,6 +49,7 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
   let leftHandler: ((pos: Position) => void) | null = null;
   let selected: Position | null = null;
   let destination: Position | null = null;
+  let obstacles: Array<{ x: number; y: number }> = [];
 
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -73,6 +75,13 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
         drawTile(x, y, color);
       }
     }
+
+    obstacles.forEach((o) => {
+      const sx = (o.x - camera.x + CENTER_X) * TILE;
+      const sy = (o.y - camera.y + CENTER_Y) * TILE;
+      ctx.fillStyle = palette.obstacle;
+      ctx.fillRect(sx, sy, TILE, TILE);
+    });
   };
 
   const drawEntities = (delta: number) => {
@@ -168,6 +177,9 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     },
     markDestination(pos: Position | null) {
       destination = pos;
+    },
+    setObstacles(coords: Array<{ x: number; y: number }>) {
+      obstacles = coords;
     }
   };
 }
