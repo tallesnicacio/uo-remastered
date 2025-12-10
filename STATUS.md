@@ -61,6 +61,7 @@
 - Tooling: flat config `eslint.config.js` (TS) + `.prettierrc`; lint rodando limpo. Typecheck (`tsc`) executa sem erros após ajustes de stamina e tipos Bun.
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
 - SessionStore persiste em disco (`server/data/sessions.json`); comando `/save` disponível.
+- Shutdown salva sessões automaticamente.
 
 ## Próximos Passos Sugeridos
  - Expandir autenticação/identidade (persistir sessions) e mapear entidade por WebSocket no servidor.

@@ -194,6 +194,8 @@ setInterval(tick, tickInterval);
 
 const shutdown = () => {
   console.log(`[${GAME_NAME}] Shutting down...`);
+  const saved = sessions.saveAll();
+  console.log(saved ? "[sessions] salvas com sucesso" : "[sessions] falha ao salvar");
   server.stop();
   process.exit(0);
 };
