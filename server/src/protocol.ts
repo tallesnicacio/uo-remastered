@@ -118,6 +118,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
       });
       return;
     case "login": {
+      if (msg.password && msg.password !== "1234") {
+        ctx.send({ type: "error", code: "auth_failed", message: "Senha inválida" });
+        return;
+      }
       const existing = msg.sessionId ? ctx.findSession(msg.sessionId) : undefined;
       const spawnPos = existing?.position ?? ctx.startPosition();
       const playerId = existing?.entityId ?? ctx.allocateEntityId();
