@@ -19,6 +19,7 @@ type DispatchContext = {
   isWalkable: (x: number, y: number) => boolean;
   listPlayers: () => Array<{ id: string; name: string }>;
   findEntity: (entityId: string) => { id: string; name: string; position: Position } | null;
+  killEntity: (entityId: string) => { id: string; name: string } | null;
 };
 
 const decoder = new TextDecoder();
@@ -176,6 +177,20 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         return;
       }
       ctx.send({ type: "target_ack", entityId: found.id, name: found.name });
+      return;
+    }
+    case "kill": {
+      if (ctx.requireLogin && !ctx.entityId) {
+        ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de usar kill." });
+        return;
+      }
+      const result = ctx.killEntity(msg.entityId);
+      if (!result) {
+        ctx.send({ type: "error", code: "invalid_target", message: "Alvo não encontrado." });
+        return;
+      }
+      ctx.broadcast({ type: "despawn", entityId: result.id });
+      ctx.broadcast({ type: "chat", from: "server", text: `${result.name} foi eliminado.` });
       return;
     }
     default:

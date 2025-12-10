@@ -30,12 +30,17 @@ export type ClientTarget = {
   entityId: string;
 };
 
+export type ClientKill = {
+  type: "kill";
+  entityId: string;
+};
+
 export type ClientMove = {
   type: "move";
   position: Position;
 };
 
-export type ClientMessage = ClientHello | ClientLogin | ClientPing | ClientChat | ClientMove | ClientTarget;
+export type ClientMessage = ClientHello | ClientLogin | ClientPing | ClientChat | ClientMove | ClientTarget | ClientKill;
 
 // Mensagens servidor -> cliente
 export type ServerWelcome = {
@@ -76,6 +81,7 @@ export type ServerSpawn = {
   entityId: string;
   name: string;
   position: Position;
+  dead?: boolean;
 };
 
 export type ServerEntityMove = {
@@ -101,6 +107,7 @@ export type ServerSnapshot = {
     id: string;
     name: string;
     position: Position;
+    dead?: boolean;
   }>;
 };
 

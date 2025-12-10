@@ -11,7 +11,7 @@ const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 const clients = new Set<WebSocket>();
 const identities = new Map<WebSocket, { sessionId: string; entityId: string; name: string }>();
-const entities = new Map<string, { name: string; position: Position }>();
+const entities = new Map<string, { name: string; position: Position; dead?: boolean }>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
 const blocked = new Set<string>((collision.blocked as [number, number][]).map(([x, y]) => `${x},${y}`));
@@ -103,6 +103,12 @@ const server = Bun.serve<WebSocket>({
           const ent = entities.get(entityId);
           if (!ent) return null;
           return { id: entityId, name: ent.name, position: ent.position };
+        },
+        killEntity: (entityId) => {
+          const ent = entities.get(entityId);
+          if (!ent) return null;
+          entities.delete(entityId);
+          return { id: entityId, name: ent.name };
         }
       });
     },
