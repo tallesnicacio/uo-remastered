@@ -63,6 +63,7 @@
 - SessionStore persiste em disco (`server/data/sessions.json`); comando `/save` disponível.
 - Shutdown salva sessões automaticamente.
 - UI de login: nome de personagem via formulário antes de conectar.
+- Login aceita senha (default 1234) via UI e envia ao servidor (auth stub).
 - NetClient evita reconexão quando já conectado/conectando (reúso de sessão).
 
 ## Próximos Passos Sugeridos

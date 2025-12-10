@@ -52,11 +52,12 @@ export class NetClient {
     return this.lastServerPosition;
   }
 
-  login(name: string) {
+  login(name: string, password?: string) {
     this.send({
       type: "login",
       name,
-      sessionId: this.sessionId
+      sessionId: this.sessionId,
+      password
     });
   }
 

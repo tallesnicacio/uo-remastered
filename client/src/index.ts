@@ -19,6 +19,7 @@ const MAP_WIDTH = 20;
 const MAP_HEIGHT = 12;
 let lastSnapshotCount = 0;
 let playerName = "";
+let playerPassword = "1234";
 
 function bootstrap() {
   console.info(`[${GAME_NAME}] Client bootstrap`);
@@ -46,7 +47,7 @@ function bootstrap() {
   net.onWelcome = (info) => {
     console.info(`MOTD: ${info.motd}, tickRate=${info.tickRate}`);
     const name = playerName || `anon-${Math.floor(Math.random() * 9999)}`;
-    net.login(name);
+    net.login(name, playerPassword);
     overlay.setStatus("Conectado");
   };
 
@@ -153,8 +154,9 @@ function bootstrap() {
 
   net.connect();
 
-  login.onSubmit = (name) => {
+  login.onSubmit = (name, password) => {
     playerName = name;
+    playerPassword = password || "1234";
     net.connect();
   };
 

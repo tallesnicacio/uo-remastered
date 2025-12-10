@@ -1,7 +1,8 @@
 export class LoginForm {
   private container: HTMLDivElement;
   private input: HTMLInputElement;
-  onSubmit?: (name: string) => void;
+  private password: HTMLInputElement;
+  onSubmit?: (name: string, password?: string) => void;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
@@ -39,6 +40,21 @@ export class LoginForm {
     this.input.style.color = "#e0e0e0";
     this.input.style.fontFamily = "Courier New, monospace";
 
+    const pwdLabel = document.createElement("div");
+    pwdLabel.textContent = "Senha (opcional, padrão 1234)";
+    pwdLabel.style.margin = "10px 0 6px 0";
+
+    this.password = document.createElement("input");
+    this.password.type = "password";
+    this.password.placeholder = "1234";
+    this.password.style.width = "100%";
+    this.password.style.padding = "8px 10px";
+    this.password.style.borderRadius = "6px";
+    this.password.style.border = "1px solid rgba(255,255,255,0.2)";
+    this.password.style.background = "rgba(0,0,0,0.3)";
+    this.password.style.color = "#e0e0e0";
+    this.password.style.fontFamily = "Courier New, monospace";
+
     const hint = document.createElement("div");
     hint.textContent = "Pressione Enter para conectar.";
     hint.style.marginTop = "8px";
@@ -47,6 +63,8 @@ export class LoginForm {
 
     panel.appendChild(label);
     panel.appendChild(this.input);
+    panel.appendChild(pwdLabel);
+    panel.appendChild(this.password);
     panel.appendChild(hint);
     this.container.appendChild(panel);
     root.appendChild(this.container);
@@ -54,7 +72,8 @@ export class LoginForm {
     this.input.addEventListener("keydown", (ev) => {
       if (ev.key === "Enter") {
         const name = this.input.value.trim() || `anon-${Math.floor(Math.random() * 9999)}`;
-        this.onSubmit?.(name);
+        const pwd = this.password.value.trim() || "1234";
+        this.onSubmit?.(name, pwd);
         this.container.style.display = "none";
       }
     });
