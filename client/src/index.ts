@@ -4,6 +4,7 @@ import { Palette } from "./renderer/palette";
 import { makeAvatarSprite } from "./renderer/sprites";
 import { World } from "./state/world";
 import { NetClient } from "./net/client";
+import { straightPath } from "./pathfinding";
 
 const VERSION = "0.1.0";
 
@@ -75,9 +76,15 @@ function bootstrap() {
 
   renderer.onRightClick((pos) => {
     if (!world.localId) return;
-    world.setTarget(world.localId, pos);
-    net.sendMove(pos);
+    const current = world.getLocalPosition();
+    if (!current) return;
+    const path = straightPath(current, pos);
     renderer.highlight(pos);
+
+    // Envia somente último ponto por enquanto; caminho completo fica para passo futuro
+    const last = path.path[path.path.length - 1];
+    world.setTarget(world.localId, last);
+    net.sendMove(last);
   });
 
   renderer.onLeftClick((pos) => {
