@@ -12,6 +12,8 @@ import { ChatBox } from "./ui/chat";
 const VERSION = "0.1.0";
 let moveQueue: Position[] = [];
 const MOVE_INTERVAL_MS = 150;
+const MAP_WIDTH = 20;
+const MAP_HEIGHT = 12;
 
 function bootstrap() {
   console.info(`[${GAME_NAME}] Client bootstrap`);
@@ -61,7 +63,7 @@ function bootstrap() {
 
   net.onSnapshot = (entities) => {
     world.applySnapshot(entities);
-    overlay.setStatus(`Conectado | Entidades: ${entities.length}`);
+    overlay.setStatus(`Conectado | Entidades: ${entities.length} | Fila: ${moveQueue.length}`);
     // Se snapshot não contém localId, limpar fila para evitar drift
     if (world.localId && !entities.find((e) => e.id === world.localId)) {
       moveQueue = [];
@@ -82,7 +84,7 @@ function bootstrap() {
 
   net.onPong = (latency) => {
     overlay.log(`Ping: ${latency}ms`);
-    overlay.setStatus(`Conectado | Ping: ${latency}ms`);
+    overlay.setStatus(`Conectado | Ping: ${latency}ms | Fila: ${moveQueue.length}`);
   };
 
   net.onChat = (from, text) => {
@@ -136,6 +138,10 @@ function bootstrap() {
 
   renderer.onRightClick((pos) => {
     if (!world.localId) return;
+    if (pos.x < 0 || pos.y < 0 || pos.x >= MAP_WIDTH || pos.y >= MAP_HEIGHT) {
+      overlay.log("Destino fora do mapa");
+      return;
+    }
     const current = world.getLocalPosition();
     if (!current) return;
     const path = aStarPath(current, pos, (x, y) => world.isWalkable(x, y));

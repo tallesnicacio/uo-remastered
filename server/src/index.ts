@@ -14,7 +14,8 @@ const identities = new Map<WebSocket, { sessionId: string; entityId: string; nam
 const entities = new Map<string, { name: string; position: Position }>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
-const blocked = new Set<string>((collision.blocked as [number, number][]) .map(([x, y]) => `${x},${y}`));
+const blocked = new Set<string>((collision.blocked as [number, number][]).map(([x, y]) => `${x},${y}`));
+const mapBounds = { width: collision.width ?? 0, height: collision.height ?? 0 };
 
 const startPosition = (): Position => ({
   x: 0,
@@ -91,7 +92,12 @@ const server = Bun.serve<WebSocket>({
         tickRate: TICK_RATE,
         motd: config.server.motd,
         requireLogin: true,
-        isWalkable: (x, y) => !blocked.has(`${Math.round(x)},${Math.round(y)}`)
+        isWalkable: (x, y) => {
+          if (x < 0 || y < 0 || x >= mapBounds.width || y >= mapBounds.height) {
+            return false;
+          }
+          return !blocked.has(`${Math.round(x)},${Math.round(y)}`);
+        }
       });
     },
     close(ws) {
