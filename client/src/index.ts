@@ -9,6 +9,7 @@ import { Overlay } from "./ui/overlay";
 import { demoObstacles } from "./data/obstacles";
 import { ChatBox } from "./ui/chat";
 import { Hud } from "./ui/hud";
+import type { Position } from "@shared/types/position";
 
 const VERSION = "0.1.0";
 let moveQueue: Position[] = [];
