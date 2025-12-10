@@ -14,6 +14,7 @@ let moveQueue: Position[] = [];
 const MOVE_INTERVAL_MS = 150;
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 12;
+let lastSnapshotCount = 0;
 
 function bootstrap() {
   console.info(`[${GAME_NAME}] Client bootstrap`);
@@ -63,6 +64,7 @@ function bootstrap() {
 
   net.onSnapshot = (entities) => {
     world.applySnapshot(entities);
+    lastSnapshotCount = entities.length;
     overlay.setStatus(`Conectado | Entidades: ${entities.length} | Fila: ${moveQueue.length}`);
     // Se snapshot não contém localId, limpar fila para evitar drift
     if (world.localId && !entities.find((e) => e.id === world.localId)) {
@@ -161,7 +163,7 @@ function bootstrap() {
     const hit = world.findEntityAt(Math.round(pos.x), Math.round(pos.y));
     if (hit) {
       renderer.highlight(hit.position);
-      overlay.log(`Selecionado: ${hit.name} (${hit.id}) @ (${hit.position.x},${hit.position.y})`);
+      overlay.log(`Selecionado: ${hit.name} (${hit.id}) @ (${hit.position.x},${hit.position.y}) | Entidades: ${lastSnapshotCount}`);
       const stats = hit.stats ?? {
         hp: 50,
         hpMax: 100,
