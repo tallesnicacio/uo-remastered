@@ -15,6 +15,8 @@ export type ClientLogin = {
   sessionId?: string;
 };
 
+export type UserRole = "Owner" | "Admin" | "GM" | "Player";
+
 export type ClientPing = {
   type: "ping";
   nonce: number;
@@ -85,6 +87,7 @@ export type ServerLoginOk = {
   name: string;
   position: Position;
   sessionId: string;
+  role: UserRole;
 };
 
 export type ServerPong = {

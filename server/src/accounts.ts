@@ -1,13 +1,16 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 
+type UserRole = "Owner" | "Admin" | "GM" | "Player";
+
 type Account = {
   name: string;
   password: string;
+  role: UserRole;
 };
 
 export class AccountStore {
-  private accounts = new Map<string, string>();
+  private accounts = new Map<string, Account>();
   private filePath: string;
 
   constructor() {
@@ -15,20 +18,21 @@ export class AccountStore {
     this.loadFromDisk();
   }
 
-  validateOrCreate(name: string, password?: string): boolean {
-    if (!name) return false;
+  validateOrCreate(name: string, password?: string): { ok: boolean; role: UserRole } {
+    if (!name) return { ok: false, role: "Player" };
     const pwd = password?.trim() || "1234";
     const existing = this.accounts.get(name);
     if (existing) {
-      return existing === pwd;
+      return { ok: existing.password === pwd, role: existing.role };
     }
-    this.accounts.set(name, pwd);
+    const role: UserRole = this.accounts.size === 0 ? "Owner" : "Player";
+    this.accounts.set(name, { name, password: pwd, role });
     this.persist();
-    return true;
+    return { ok: true, role };
   }
 
   private persist() {
-    const arr: Account[] = [...this.accounts.entries()].map(([name, password]) => ({ name, password }));
+    const arr: Account[] = [...this.accounts.values()];
     try {
       writeFileSync(this.filePath, JSON.stringify(arr, null, 2), "utf8");
     } catch (err) {
@@ -41,7 +45,7 @@ export class AccountStore {
     try {
       const raw = readFileSync(this.filePath, "utf8");
       const arr = JSON.parse(raw) as Account[];
-      arr.forEach((acc) => this.accounts.set(acc.name, acc.password));
+      arr.forEach((acc) => this.accounts.set(acc.name, acc));
       console.log(`[accounts] carregadas ${arr.length} contas`);
     } catch (err) {
       console.warn("[accounts] erro ao carregar", err);

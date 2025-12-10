@@ -2,7 +2,7 @@ import type { ClientMessage, ServerMessage, EntityStatsWire } from "@shared/pack
 import type { Position } from "@shared/types/position";
 
 type WelcomeInfo = { motd: string; tickRate: number };
-type LoginInfo = { playerId: string; name: string; position: Position; sessionId: string };
+type LoginInfo = { playerId: string; name: string; position: Position; sessionId: string; role: import("@shared/packets/messages").UserRole };
 
 export class NetClient {
   private socket: WebSocket | null = null;
@@ -97,7 +97,7 @@ export class NetClient {
         this.sessionId = data.sessionId;
         this.localEntityId = data.playerId;
         this.lastServerPosition = data.position;
-        this.onLogin?.({ playerId: data.playerId, name: data.name, position: data.position, sessionId: data.sessionId });
+        this.onLogin?.({ playerId: data.playerId, name: data.name, position: data.position, sessionId: data.sessionId, role: data.role });
         return;
       case "spawn":
         this.onSpawn?.({ entityId: data.entityId, name: data.name, position: data.position });

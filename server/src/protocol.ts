@@ -38,7 +38,7 @@ type DispatchContext = {
       }
     | null;
   saveAll: () => boolean;
-  auth: (name: string, password?: string) => boolean;
+  auth: (name: string, password?: string) => { ok: boolean; role: import("@shared/packets/messages").UserRole };
   respawn: () => { position: Position; stats?: unknown } | null;
 };
 
@@ -120,7 +120,8 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
       });
       return;
     case "login": {
-      if (!ctx.auth(msg.name, msg.password)) {
+      const auth = ctx.auth(msg.name, msg.password);
+      if (!auth.ok) {
         ctx.send({ type: "error", code: "auth_failed", message: "Senha inválida" });
         return;
       }
@@ -136,7 +137,8 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         playerId,
         name: msg.name,
         position: spawnPos,
-        sessionId: session.id
+        sessionId: session.id,
+        role: auth.role
       };
 
       ctx.send(loginMsg);

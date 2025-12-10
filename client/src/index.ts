@@ -54,6 +54,7 @@ function bootstrap() {
   net.onLogin = (session) => {
     world.setLocal(session.playerId, session.name, session.position);
     renderer.setWorld(world);
+    overlay.log(`Role: ${session.role}`);
     const stats = world.getLocalStats() ?? {
       hp: 80,
       hpMax: 100,
