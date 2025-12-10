@@ -32,7 +32,11 @@ export class LoginForm {
 
     this.input = document.createElement("input");
     this.input.type = "text";
+    const storedName = typeof localStorage !== "undefined" ? localStorage.getItem("newuo:name") ?? "" : "";
+    const storedPwd = typeof localStorage !== "undefined" ? localStorage.getItem("newuo:pwd") ?? "1234" : "";
+
     this.input.placeholder = "anon-1234";
+    this.input.value = storedName;
     this.input.style.width = "100%";
     this.input.style.padding = "8px 10px";
     this.input.style.borderRadius = "6px";
@@ -48,6 +52,7 @@ export class LoginForm {
     this.password = document.createElement("input");
     this.password.type = "password";
     this.password.placeholder = "1234";
+    this.password.value = storedPwd;
     this.password.style.width = "100%";
     this.password.style.padding = "8px 10px";
     this.password.style.borderRadius = "6px";
@@ -74,6 +79,10 @@ export class LoginForm {
       if (ev.key === "Enter") {
         const name = this.input.value.trim() || `anon-${Math.floor(Math.random() * 9999)}`;
         const pwd = this.password.value.trim() || "1234";
+        if (typeof localStorage !== "undefined") {
+          localStorage.setItem("newuo:name", name);
+          localStorage.setItem("newuo:pwd", pwd);
+        }
         this.onSubmit?.(name, pwd);
         this.container.style.display = "none";
       }
