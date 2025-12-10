@@ -36,6 +36,7 @@ const server = Bun.serve<WebSocket>({
   websocket: {
     open(ws) {
       clients.add(ws);
+      console.log("[conn] novo cliente conectado");
       ws.send(
         JSON.stringify({
           type: "welcome",
@@ -72,6 +73,7 @@ const server = Bun.serve<WebSocket>({
         identities.set(ws, { sessionId, entityId, name });
         sessions.updatePosition(sessionId, position);
         entities.set(entityId, { name, position });
+        console.log(`[login] ${name} (${entityId})`);
       };
 
       handleClientMessage(parsed, {
@@ -106,6 +108,7 @@ const server = Bun.serve<WebSocket>({
             console.warn("[despawn] erro ao enviar", err);
           }
         }
+        console.log(`[disconnect] ${identity.name} (${identity.entityId})`);
       }
       identities.delete(ws);
     }

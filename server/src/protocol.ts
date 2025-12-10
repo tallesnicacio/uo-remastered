@@ -134,6 +134,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de mover." });
         return;
       }
+      if (!Number.isFinite(msg.position.x) || !Number.isFinite(msg.position.y)) {
+        ctx.send({ type: "error", code: "invalid_move", message: "Coordenadas inválidas." });
+        return;
+      }
       if (!ctx.isWalkable(msg.position.x, msg.position.y)) {
         ctx.send({ type: "error", code: "blocked_tile", message: "Destino bloqueado." });
         return;

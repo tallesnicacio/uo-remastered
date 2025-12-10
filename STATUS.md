@@ -38,6 +38,7 @@
 - Despawn: servidor envia `despawn` ao desconectar; cliente remove entidade ao receber.
 - Chat: input simples em `client/src/ui/chat.ts`; mensagens aparecem no overlay.
 - Ping: `onPong` mostra latência no overlay.
+- Logging: servidor loga conexões/login/desconexão; validação extra para moves inválidos. Overlay agora mantém histórico recente de mensagens.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).

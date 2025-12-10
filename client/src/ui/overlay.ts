@@ -3,6 +3,8 @@ export class Overlay {
   private logEl: HTMLDivElement;
   private detailEl: HTMLDivElement;
   private tooltipEl: HTMLDivElement;
+  private logLines: string[] = [];
+  private maxLines = 6;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
@@ -53,7 +55,9 @@ export class Overlay {
   }
 
   log(message: string) {
-    this.logEl.textContent = message;
+    this.logLines.unshift(message);
+    this.logLines = this.logLines.slice(0, this.maxLines);
+    this.logEl.innerHTML = this.logLines.map((l) => `<div>${l}</div>`).join("");
   }
 
   showDetails(title: string, lines: string[]) {
