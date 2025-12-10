@@ -26,8 +26,9 @@ const entities = new Map<string, EntityState>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
 const accounts = new AccountStore();
-const blocked = new Set<string>((collision.blocked as [number, number][]).map(([x, y]) => `${x},${y}`));
-const mapBounds = { width: collision.width ?? 0, height: collision.height ?? 0 };
+const collisionConfig = config.collision ?? collision;
+const blocked = new Set<string>((collisionConfig?.blocked as [number, number][])?.map(([x, y]) => `${x},${y}`) ?? []);
+const mapBounds = { width: collisionConfig?.width ?? 0, height: collisionConfig?.height ?? 0 };
 
 const startPosition = (): Position => ({
   x: 0,

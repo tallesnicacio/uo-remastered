@@ -30,6 +30,11 @@ export type GameConfig = {
   server: ServerConfig;
   players: PlayersConfig;
   combat: CombatConfig;
+  collision?: {
+    width: number;
+    height: number;
+    blocked: Array<[number, number]>;
+  };
 };
 
 const CONFIG_DIR = path.resolve(import.meta.dir, "../config");
@@ -44,6 +49,7 @@ export function loadConfig(): GameConfig {
   const server = loadJson<ServerConfig>("server.json");
   const players = loadJson<PlayersConfig>("players.json");
   const combat = loadJson<CombatConfig>("combat.json");
+  const collision = loadJson<GameConfig["collision"]>("collision.json");
 
-  return { server, players, combat };
+  return { server, players, combat, collision: collision ?? undefined };
 }
