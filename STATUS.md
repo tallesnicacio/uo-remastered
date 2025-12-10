@@ -22,7 +22,7 @@
 - Client: renderer Canvas com múltiplos layers e sprites procedurais (`client/src/renderer/canvas.ts`, `renderer/palette.ts`, `renderer/sprites.ts`); `client/src/index.ts` integra renderer, world state e input.
 - Shared: constantes em `shared/constants/runtime.ts`; DTOs e tipos de posição em `shared/packets/messages.ts` e `shared/types/position.ts`.
 - Rede cliente: `client/src/net/client.ts` implementa hello/login/ping/chat/move e callbacks.
-- Estado cliente: `client/src/state/world.ts` mantém entidades, posição local e alvo para interpolação; renderer faz smoothing de movimento.
+- Estado cliente: `client/src/state/world.ts` mantém entidades, posição local e alvo para interpolação; renderer faz smoothing de movimento. Netcode faz reconciliação básica removendo pendentes e aplicando posição do servidor.
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
 

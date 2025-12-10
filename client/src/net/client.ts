@@ -9,6 +9,8 @@ export class NetClient {
   private sessionId: string | undefined;
   private heartbeat?: number;
   private pendingMoves: Position[] = [];
+  private localEntityId: string | null = null;
+  private lastServerPosition: Position | null = null;
 
   constructor(private url: string, private version: string) {}
 
@@ -17,6 +19,7 @@ export class NetClient {
   onSpawn?: (payload: { entityId: string; name: string; position: Position }) => void;
   onMove?: (entityId: string, position: Position) => void;
   onChat?: (from: string, text: string) => void;
+  onReconcile?: (position: Position) => void;
 
   connect() {
     this.socket = new WebSocket(this.url);
@@ -74,14 +77,21 @@ export class NetClient {
         return;
       case "login_ok":
         this.sessionId = data.sessionId;
+        this.localEntityId = data.playerId;
+        this.lastServerPosition = data.position;
         this.onLogin?.({ playerId: data.playerId, name: data.name, position: data.position, sessionId: data.sessionId });
         return;
       case "spawn":
         this.onSpawn?.({ entityId: data.entityId, name: data.name, position: data.position });
         return;
       case "entity_move":
-        // Remove da fila de pendingMoves se for do próprio jogador (reconciliação simples)
-        this.pendingMoves.shift();
+        if (data.entityId === this.localEntityId) {
+          this.lastServerPosition = data.position;
+          // Remove moves locais aplicados até alinhar
+          this.pendingMoves = this.pendingMoves.filter((m) => !(m.x === data.position.x && m.y === data.position.y));
+          this.onReconcile?.(data.position);
+        }
+
         this.onMove?.(data.entityId, data.position);
         return;
       case "chat":

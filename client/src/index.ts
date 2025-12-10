@@ -42,6 +42,11 @@ function bootstrap() {
     world.setTarget(entityId, position);
   };
 
+  net.onReconcile = (pos) => {
+    if (!world.localId) return;
+    world.updatePosition(world.localId, pos);
+  };
+
   net.onChat = (from, text) => {
     console.log(`[chat] ${from}: ${text}`);
   };
