@@ -40,6 +40,8 @@ type DispatchContext = {
   saveAll: () => boolean;
   auth: (name: string, password?: string) => { ok: boolean; role: import("@shared/packets/messages").UserRole };
   respawn: () => { position: Position; stats?: unknown } | null;
+  changeRole: (target: string, role: import("@shared/packets/messages").UserRole) => boolean;
+  currentRole?: import("@shared/packets/messages").UserRole;
 };
 
 const decoder = new TextDecoder();
@@ -165,6 +167,25 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
           from: "server",
           text: `Online (${players.length}): ${names}`
         });
+        return;
+      }
+      if (msg.text.startsWith("/role ")) {
+        if (ctx.currentRole !== "Owner" && ctx.currentRole !== "Admin") {
+          ctx.send({ type: "error", code: "forbidden", message: "Apenas Owner/Admin podem alterar roles." });
+          return;
+        }
+        const [, target, role] = msg.text.split(" ");
+        const asRole = role as import("@shared/packets/messages").UserRole;
+        if (!target || !asRole) {
+          ctx.send({ type: "error", code: "invalid_role", message: "Use /role <nome> <Role>" });
+          return;
+        }
+        const ok = ctx.changeRole(target, asRole);
+        if (!ok) {
+          ctx.send({ type: "error", code: "invalid_target", message: "Jogador não encontrado para role." });
+          return;
+        }
+        ctx.broadcast({ type: "chat", from: "server", text: `${target} agora é ${asRole}` });
         return;
       }
       ctx.broadcast({

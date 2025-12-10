@@ -7,6 +7,7 @@ export type Session = {
   entityId: string;
   name: string;
   position: Position;
+  role?: import("@shared/packets/messages").UserRole;
   stats?: {
     hp: number;
     hpMax: number;

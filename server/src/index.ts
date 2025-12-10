@@ -13,12 +13,13 @@ const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 type WS = ServerWebSocket<unknown>;
 const clients = new Set<WS>();
-const identities = new Map<WS, { sessionId: string; entityId: string; name: string }>();
+const identities = new Map<WS, { sessionId: string; entityId: string; name: string; role: import("@shared/packets/messages").UserRole }>();
 type EntityState = {
   name: string;
   position: Position;
   dead?: boolean;
   stats: { hp: number; hpMax: number; mana: number; manaMax: number; stamina: number; staminaMax: number; level: number; exp: number; expMax: number };
+  role: import("@shared/packets/messages").UserRole;
 };
 
 const entities = new Map<string, EntityState>();
@@ -94,11 +95,12 @@ const server = Bun.serve({
 
       const identity = identities.get(ws);
       const bindSession = (sessionId: string, entityId: string, name: string, position: Position) => {
-        identities.set(ws, { sessionId, entityId, name });
+        const role = sessions.get(sessionId)?.role ?? "Player";
+        identities.set(ws, { sessionId, entityId, name, role });
         sessions.updatePosition(sessionId, position);
         const existingStats = sessions.get(sessionId)?.stats ?? baseStats();
-        entities.set(entityId, { name, position, stats: existingStats });
-        console.log(`[login] ${name} (${entityId})`);
+        entities.set(entityId, { name, position, stats: existingStats, role });
+        console.log(`[login] ${name} (${entityId}) role=${role}`);
       };
 
       handleClientMessage(parsed, {
@@ -153,6 +155,22 @@ const server = Bun.serve({
             sessions.updateStats(identity.sessionId, ent.stats);
           }
           return { position: pos, stats: ent.stats };
+        },
+        changeRole: (target, role) => {
+          for (const [sid, sess] of sessions["sessions"]) {
+            if (sess.name === target) {
+              sess.role = role;
+              sessions["sessions"].set(sid, sess);
+              const ent = entities.get(sess.entityId);
+              if (ent) {
+                ent.role = role;
+                entities.set(sess.entityId, ent);
+              }
+              sessions.saveAll();
+              return true;
+            }
+          }
+          return false;
         }
       });
     },

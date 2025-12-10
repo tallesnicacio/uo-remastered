@@ -45,6 +45,11 @@ export type ClientRespawn = {
   type: "respawn";
 };
 
+export type ClientRoleChange = {
+  type: "role";
+  target: string;
+  role: UserRole;
+};
 export type EntityStatsWire = {
   hp: number;
   hpMax: number;
@@ -71,7 +76,8 @@ export type ClientMessage =
   | ClientTarget
   | ClientKill
   | ClientSave
-  | ClientRespawn;
+  | ClientRespawn
+  | ClientRoleChange;
 
 // Mensagens servidor -> cliente
 export type ServerWelcome = {
