@@ -16,6 +16,7 @@ type DispatchContext = {
   tickRate: number;
   motd: string;
   requireLogin: boolean;
+  isWalkable: (x: number, y: number) => boolean;
 };
 
 const decoder = new TextDecoder();
@@ -135,6 +136,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
     case "move":
       if (ctx.requireLogin && !ctx.entityId) {
         ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de mover." });
+        return;
+      }
+      if (!ctx.isWalkable(msg.position.x, msg.position.y)) {
+        ctx.send({ type: "error", code: "blocked_tile", message: "Destino bloqueado." });
         return;
       }
 

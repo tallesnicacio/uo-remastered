@@ -4,6 +4,7 @@ import { SessionStore } from "./session";
 import type { ServerMessage } from "@shared/packets/messages";
 import { GAME_NAME } from "@shared/constants/runtime";
 import type { Position } from "@shared/types/position";
+import collision from "../data/collision.json";
 
 const config = loadConfig();
 const TICK_RATE = config.server.tickRate;
@@ -13,6 +14,7 @@ const identities = new Map<WebSocket, { sessionId: string; entityId: string; nam
 const entities = new Map<string, { name: string; position: Position }>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
+const blocked = new Set<string>((collision.blocked as [number, number][]) .map(([x, y]) => `${x},${y}`));
 
 const startPosition = (): Position => ({
   x: 0,
@@ -86,7 +88,8 @@ const server = Bun.serve<WebSocket>({
         sessionId: identity?.sessionId,
         tickRate: TICK_RATE,
         motd: config.server.motd,
-        requireLogin: true
+        requireLogin: true,
+        isWalkable: (x, y) => !blocked.has(`${Math.round(x)},${Math.round(y)}`)
       });
     },
     close(ws) {
