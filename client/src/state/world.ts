@@ -121,4 +121,12 @@ export class World {
     entity.stats.hp = Math.max(0, entity.stats.hp - amount);
     this.entities.set(id, entity);
   }
+
+  setHp(id: string, hp: number, hpMax: number) {
+    const entity = this.entities.get(id);
+    if (!entity || !entity.stats) return;
+    entity.stats.hp = hp;
+    entity.stats.hpMax = hpMax;
+    this.entities.set(id, entity);
+  }
 }

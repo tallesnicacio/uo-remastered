@@ -133,7 +133,15 @@ function bootstrap() {
 
   net.onChat = (from, text) => {
     overlay.log(`[chat] ${from}: ${text}`);
-    // parse damage message? keep log only for now
+  };
+
+  net.onDamage = (entityId, amount, hp, hpMax) => {
+    world.setHp(entityId, hp, hpMax);
+    if (entityId === world.localId) {
+      overlay.log(`Você recebeu ${amount} de dano. HP: ${hp}/${hpMax}`);
+      const stats = world.getLocalStats();
+      if (stats) hud.update(stats);
+    }
   };
 
   net.onDespawn = (entityId) => {

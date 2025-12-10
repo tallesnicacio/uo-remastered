@@ -25,6 +25,7 @@ export class NetClient {
   onDespawn?: (entityId: string) => void;
   onPong?: (latencyMs: number) => void;
   onTargetAck?: (entityId: string, name: string) => void;
+  onDamage?: (entityId: string, amount: number, hp: number, hpMax: number) => void;
 
   connect() {
     if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
@@ -120,6 +121,9 @@ export class NetClient {
         return;
       case "target_ack":
         this.onTargetAck?.(data.entityId, data.name);
+        return;
+      case "damage":
+        this.onDamage?.(data.entityId, data.amount, data.hp, data.hpMax);
         return;
       case "chat":
         this.onChat?.(data.from, data.text);

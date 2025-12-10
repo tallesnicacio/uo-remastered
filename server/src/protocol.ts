@@ -195,12 +195,14 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
           ctx.send({ type: "error", code: "invalid_target", message: "Use /attack <id>" });
           return;
         }
-        const res = ctx.applyDamage(target, 10);
+        const dmg = Math.floor(5 + Math.random() * 10);
+        const res = ctx.applyDamage(target, dmg);
         if (!res) {
           ctx.send({ type: "error", code: "invalid_target", message: "Alvo não encontrado." });
           return;
         }
-        ctx.broadcast({ type: "chat", from: "server", text: `${ctx.entityName ?? "anon"} atingiu ${res.name} (-10 HP)` });
+        ctx.broadcast({ type: "chat", from: "server", text: `${ctx.entityName ?? "anon"} atingiu ${res.name} (-${dmg} HP)` });
+        ctx.broadcast({ type: "damage", entityId: res.id, amount: dmg, hp: res.hp, hpMax: res.hpMax });
         return;
       }
       ctx.broadcast({

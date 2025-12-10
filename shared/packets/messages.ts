@@ -114,6 +114,14 @@ export type ServerChat = {
   text: string;
 };
 
+export type ServerDamage = {
+  type: "damage";
+  entityId: string;
+  amount: number;
+  hp: number;
+  hpMax: number;
+};
+
 export type ServerError = {
   type: "error";
   code: string;
@@ -167,4 +175,5 @@ export type ServerMessage =
   | ServerEntityMove
   | ServerDespawn
   | ServerTargetAck
-  | ServerSnapshot;
+  | ServerSnapshot
+  | ServerDamage;
