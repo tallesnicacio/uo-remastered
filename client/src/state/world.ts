@@ -16,6 +16,8 @@ export type EntityStats = {
   manaMax: number;
   level: number;
   title?: string;
+  exp?: number;
+  expMax?: number;
 };
 
 export class World {

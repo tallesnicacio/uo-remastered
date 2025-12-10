@@ -54,6 +54,7 @@
 - HUD local: `client/src/ui/hud.ts` mostra HP/Mana/Nível (dados simulados no login).
 - HUD usa stats armazenados no world (simulados a partir de snapshots).
 - HUD agora tem barras de HP/Mana e atualiza a cada snapshot.
+- EXP: stats incluem exp/expMax e HUD exibe barra de experiência.
 - Snapshot/spawn carregam stats (simples) e HUD usa `getLocalStats`.
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).

@@ -11,7 +11,10 @@ const TICK_RATE = config.server.tickRate;
 const PORT = Number(process.env.PORT || config.server.port);
 const clients = new Set<WebSocket>();
 const identities = new Map<WebSocket, { sessionId: string; entityId: string; name: string }>();
-const entities = new Map<string, { name: string; position: Position; dead?: boolean; stats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number } }>();
+const entities = new Map<
+  string,
+  { name: string; position: Position; dead?: boolean; stats: { hp: number; hpMax: number; mana: number; manaMax: number; level: number; exp: number; expMax: number } }
+>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
 const blocked = new Set<string>((collision.blocked as [number, number][]).map(([x, y]) => `${x},${y}`));
@@ -30,7 +33,9 @@ const baseStats = () => ({
   hpMax: 100,
   mana: 60,
   manaMax: 60,
-  level: 1
+  level: 1,
+  exp: 0,
+  expMax: 100
 });
 
 const server = Bun.serve<WebSocket>({
