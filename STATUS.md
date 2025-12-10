@@ -23,6 +23,7 @@
 - Shared: constantes em `shared/constants/runtime.ts`; DTOs e tipos de posição em `shared/packets/messages.ts` e `shared/types/position.ts`.
 - Rede cliente: `client/src/net/client.ts` implementa hello/login/ping/chat/move e callbacks.
 - Estado cliente: `client/src/state/world.ts` mantém entidades, posição local e alvo para interpolação; renderer faz smoothing de movimento. Netcode faz reconciliação básica removendo pendentes e aplicando posição do servidor.
+- Controles: clique direito move o player com câmera centrada; clique esquerdo reservado para interações futuras. Renderer converte coordenadas de tela para mundo.
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
 

@@ -39,4 +39,9 @@ export class World {
   getPosition(id: string): Position | null {
     return this.entities.get(id)?.position ?? null;
   }
+
+  getLocalPosition(): Position | null {
+    if (!this.localId) return null;
+    return this.getPosition(this.localId);
+  }
 }

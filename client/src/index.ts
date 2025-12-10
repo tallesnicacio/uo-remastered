@@ -72,6 +72,16 @@ function bootstrap() {
       net.sendMove(next);
     }
   });
+
+  renderer.onRightClick((pos) => {
+    if (!world.localId) return;
+    world.setTarget(world.localId, pos);
+    net.sendMove(pos);
+  });
+
+  renderer.onLeftClick((pos) => {
+    console.log("Left click at", pos);
+  });
 }
 
 bootstrap();
