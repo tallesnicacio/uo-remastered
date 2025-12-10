@@ -9,4 +9,5 @@ export class Palette {
   readonly outline = "#2b2b2b";
   readonly background = "#0f0f13";
   readonly select = "#ffc857";
+  readonly destination = "#66c2ff";
 }

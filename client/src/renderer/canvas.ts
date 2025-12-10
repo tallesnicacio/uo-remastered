@@ -8,6 +8,7 @@ type Renderer = {
   onRightClick: (handler: (pos: Position) => void) => void;
   onLeftClick: (handler: (pos: Position) => void) => void;
   highlight: (pos: Position | null) => void;
+  markDestination: (pos: Position | null) => void;
 };
 
 const TILE = 32;
@@ -46,6 +47,7 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
   let rightHandler: ((pos: Position) => void) | null = null;
   let leftHandler: ((pos: Position) => void) | null = null;
   let selected: Position | null = null;
+  let destination: Position | null = null;
 
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -108,6 +110,16 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
       ctx.lineWidth = 2;
       ctx.strokeRect(sx + 2, sy + 2, TILE - 4, TILE - 4);
     }
+
+    if (destination) {
+      const dx = (destination.x - camera.x + CENTER_X) * TILE;
+      const dy = (destination.y - camera.y + CENTER_Y) * TILE;
+      ctx.strokeStyle = palette.destination;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(dx + TILE / 2, dy + TILE / 2, TILE / 3, 0, Math.PI * 2);
+      ctx.stroke();
+    }
   };
 
   const render = () => {
@@ -153,6 +165,9 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
     },
     highlight(pos: Position | null) {
       selected = pos;
+    },
+    markDestination(pos: Position | null) {
+      destination = pos;
     }
   };
 }

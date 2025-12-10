@@ -5,6 +5,7 @@ import { makeAvatarSprite } from "./renderer/sprites";
 import { World } from "./state/world";
 import { NetClient } from "./net/client";
 import { straightPath } from "./pathfinding";
+import { Overlay } from "./ui/overlay";
 
 const VERSION = "0.1.0";
 
@@ -23,6 +24,7 @@ function bootstrap() {
   const world = new World();
   const renderer = createRenderer(root, palette, avatarSprites);
   const net = new NetClient(`ws://localhost:2593`, VERSION);
+  const overlay = new Overlay(root);
 
   net.onWelcome = (info) => {
     console.info(`MOTD: ${info.motd}, tickRate=${info.tickRate}`);
@@ -50,6 +52,7 @@ function bootstrap() {
 
   net.onChat = (from, text) => {
     console.log(`[chat] ${from}: ${text}`);
+    overlay.log(`[chat] ${from}: ${text}`);
   };
 
   net.connect();
@@ -80,6 +83,7 @@ function bootstrap() {
     if (!current) return;
     const path = straightPath(current, pos);
     renderer.highlight(pos);
+    renderer.markDestination(pos);
 
     // Envia somente último ponto por enquanto; caminho completo fica para passo futuro
     const last = path.path[path.path.length - 1];
@@ -91,10 +95,10 @@ function bootstrap() {
     const hit = world.findEntityAt(Math.round(pos.x), Math.round(pos.y));
     if (hit) {
       renderer.highlight(hit.position);
-      console.log(`Selecionado: ${hit.name} (${hit.id})`);
+      overlay.log(`Selecionado: ${hit.name} (${hit.id}) @ (${hit.position.x},${hit.position.y})`);
     } else {
       renderer.highlight(pos);
-      console.log("Clique em terreno", pos);
+      overlay.log(`Terreno em (${Math.round(pos.x)},${Math.round(pos.y)})`);
     }
   });
 }
