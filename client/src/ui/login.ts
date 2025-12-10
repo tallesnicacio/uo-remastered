@@ -2,6 +2,7 @@ export class LoginForm {
   private container: HTMLDivElement;
   private input: HTMLInputElement;
   private password: HTMLInputElement;
+  private roleEl: HTMLDivElement;
   onSubmit?: (name: string, password?: string) => void;
   onShow?: () => void;
 
@@ -67,11 +68,17 @@ export class LoginForm {
     hint.style.fontSize = "12px";
     hint.style.opacity = "0.8";
 
+    this.roleEl = document.createElement("div");
+    this.roleEl.style.marginTop = "4px";
+    this.roleEl.style.fontSize = "12px";
+    this.roleEl.style.opacity = "0.8";
+
     panel.appendChild(label);
     panel.appendChild(this.input);
     panel.appendChild(pwdLabel);
     panel.appendChild(this.password);
     panel.appendChild(hint);
+    panel.appendChild(this.roleEl);
     this.container.appendChild(panel);
     root.appendChild(this.container);
 
@@ -100,5 +107,9 @@ export class LoginForm {
     }
     this.container.style.display = "flex";
     this.onShow?.();
+  }
+
+  setRole(role: string) {
+    this.roleEl.textContent = `Role atual: ${role}`;
   }
 }
