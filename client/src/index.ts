@@ -54,6 +54,10 @@ function bootstrap() {
     world.updatePosition(world.localId, pos);
   };
 
+  net.onSnapshot = (entities) => {
+    world.applySnapshot(entities);
+  };
+
   net.onChat = (from, text) => {
     console.log(`[chat] ${from}: ${text}`);
     overlay.log(`[chat] ${from}: ${text}`);

@@ -102,6 +102,8 @@ console.log(`[${GAME_NAME}] Config de jogadores: start=${config.players.startLoc
 
 let lastTick = performance.now();
 const tickInterval = 1000 / TICK_RATE;
+const snapshotInterval = 1000;
+let lastSnapshot = performance.now();
 
 function tick() {
   const now = performance.now();
@@ -111,6 +113,11 @@ function tick() {
   // TODO: plug in world/game loop systems
   if (Math.round(now / 1000) % 5 === 0) {
     console.debug(`[tick] Δ=${delta.toFixed(2)}ms`);
+  }
+
+  if (now - lastSnapshot >= snapshotInterval) {
+    sendSnapshot();
+    lastSnapshot = now;
   }
 }
 
@@ -124,3 +131,23 @@ const shutdown = () => {
 
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
+
+function sendSnapshot() {
+  const snapshot = {
+    type: "snapshot",
+    entities: [...entities.entries()].map(([id, data]) => ({
+      id,
+      name: data.name,
+      position: data.position
+    }))
+  } satisfies ServerMessage;
+
+  const payload = JSON.stringify(snapshot);
+  for (const client of clients) {
+    try {
+      client.send(payload);
+    } catch (err) {
+      console.warn("[snapshot] erro ao enviar", err);
+    }
+  }
+}

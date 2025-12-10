@@ -79,6 +79,15 @@ export type ServerEntityMove = {
   position: Position;
 };
 
+export type ServerSnapshot = {
+  type: "snapshot";
+  entities: Array<{
+    id: string;
+    name: string;
+    position: Position;
+  }>;
+};
+
 export type ServerMessage =
   | ServerWelcome
   | ServerLoginOk
@@ -86,4 +95,5 @@ export type ServerMessage =
   | ServerChat
   | ServerError
   | ServerSpawn
-  | ServerEntityMove;
+  | ServerEntityMove
+  | ServerSnapshot;

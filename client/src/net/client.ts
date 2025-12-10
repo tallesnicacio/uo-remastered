@@ -20,6 +20,7 @@ export class NetClient {
   onMove?: (entityId: string, position: Position) => void;
   onChat?: (from: string, text: string) => void;
   onReconcile?: (position: Position) => void;
+  onSnapshot?: (entities: Array<{ id: string; name: string; position: Position }>) => void;
 
   connect() {
     this.socket = new WebSocket(this.url);
@@ -93,6 +94,9 @@ export class NetClient {
         }
 
         this.onMove?.(data.entityId, data.position);
+        return;
+      case "snapshot":
+        this.onSnapshot?.(data.entities);
         return;
       case "chat":
         this.onChat?.(data.from, data.text);

@@ -90,4 +90,10 @@ export class World {
   clearObstacles() {
     this.obstacles.clear();
   }
+
+  applySnapshot(entities: Array<{ id: string; name: string; position: Position }>) {
+    entities.forEach((e) => {
+      this.upsertEntity(e.id, e.name, e.position);
+    });
+  }
 }
