@@ -4,11 +4,22 @@ export type SpriteFrames = {
   frames: HTMLCanvasElement[];
   width: number;
   height: number;
+  shadow?: HTMLCanvasElement;
 };
 
 export function makeAvatarSprite(palette: Palette): SpriteFrames {
   const frames: HTMLCanvasElement[] = [];
   const size = 28;
+  const shadow = document.createElement("canvas");
+  shadow.width = size;
+  shadow.height = size;
+  const shCtx = shadow.getContext("2d");
+  if (shCtx) {
+    shCtx.fillStyle = "rgba(0,0,0,0.25)";
+    shCtx.beginPath();
+    shCtx.ellipse(size / 2, size / 2 + 6, 10, 6, 0, 0, Math.PI * 2);
+    shCtx.fill();
+  }
 
   for (let i = 0; i < 2; i++) {
     const canvas = document.createElement("canvas");
@@ -29,5 +40,5 @@ export function makeAvatarSprite(palette: Palette): SpriteFrames {
     frames.push(canvas);
   }
 
-  return { frames, width: size, height: size };
+  return { frames, width: size, height: size, shadow };
 }

@@ -24,6 +24,7 @@ type DrawEntity = {
   x: number;
   y: number;
   name: string;
+  frame: number;
 };
 
 export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite: SpriteFrames): Renderer {
@@ -101,13 +102,18 @@ export function createRenderer(root: HTMLElement, palette: Palette, avatarSprite
       // Ajusta posição para câmera centrada no player local
       const screenX = blended.x - camera.x + CENTER_X;
       const screenY = blended.y - camera.y + CENTER_Y;
-      return { id: entity.id, x: screenX, y: screenY, name: entity.name };
+      return { id: entity.id, x: screenX, y: screenY, name: entity.name, frame: frame % avatarSprite.frames.length };
     });
 
-    const sprite = avatarSprite.frames[frame % avatarSprite.frames.length];
-
     entities.forEach((entity) => {
-      ctx.drawImage(sprite, entity.x * TILE + 2, entity.y * TILE + 2);
+      const sprite = avatarSprite.frames[entity.frame];
+      const shadow = avatarSprite.shadow;
+      const px = entity.x * TILE + 2;
+      const py = entity.y * TILE + 2;
+      if (shadow) {
+        ctx.drawImage(shadow, px, py + 6);
+      }
+      ctx.drawImage(sprite, px, py);
       ctx.fillStyle = palette.outline;
       ctx.fillText(entity.name, entity.x * TILE + 4, entity.y * TILE + TILE - 4);
     });
