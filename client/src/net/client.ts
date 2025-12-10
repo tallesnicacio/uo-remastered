@@ -24,6 +24,7 @@ export class NetClient {
   onError?: (code: string, message: string) => void;
   onDespawn?: (entityId: string) => void;
   onPong?: (latencyMs: number) => void;
+  onTargetAck?: (entityId: string, name: string) => void;
 
   connect() {
     this.socket = new WebSocket(this.url);
@@ -107,6 +108,9 @@ export class NetClient {
         return;
       case "despawn":
         this.onDespawn?.(data.entityId);
+        return;
+      case "target_ack":
+        this.onTargetAck?.(data.entityId, data.name);
         return;
       case "chat":
         this.onChat?.(data.from, data.text);

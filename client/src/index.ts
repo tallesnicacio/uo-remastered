@@ -97,6 +97,10 @@ function bootstrap() {
     world.removeEntity(entityId);
   };
 
+  net.onTargetAck = (entityId, name) => {
+    overlay.log(`Target: ${name} (${entityId})`);
+  };
+
   net.connect();
 
   chat.onSend = (text) => {
