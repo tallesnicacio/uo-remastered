@@ -4,7 +4,7 @@ import { Palette } from "./renderer/palette";
 import { makeAvatarSprite } from "./renderer/sprites";
 import { World } from "./state/world";
 import { NetClient } from "./net/client";
-import { straightPath } from "./pathfinding";
+import { aStarPath } from "./pathfinding";
 import { Overlay } from "./ui/overlay";
 
 const VERSION = "0.1.0";
@@ -81,7 +81,8 @@ function bootstrap() {
     if (!world.localId) return;
     const current = world.getLocalPosition();
     if (!current) return;
-    const path = straightPath(current, pos);
+    // walkable stub: tudo é walkable por enquanto
+    const path = aStarPath(current, pos, (x, y) => world.isWalkable(x, y));
     renderer.highlight(pos);
     renderer.markDestination(pos);
 

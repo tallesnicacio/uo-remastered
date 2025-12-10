@@ -10,6 +10,7 @@ export type Entity = {
 export class World {
   private entities = new Map<string, Entity>();
   localId: string | null = null;
+  private walkableFn: (x: number, y: number) => boolean = () => true;
 
   setLocal(id: string, name: string, position: Position) {
     this.localId = id;
@@ -52,5 +53,13 @@ export class World {
       }
     }
     return null;
+  }
+
+  setWalkable(fn: (x: number, y: number) => boolean) {
+    this.walkableFn = fn;
+  }
+
+  isWalkable(x: number, y: number): boolean {
+    return this.walkableFn(x, y);
   }
 }
