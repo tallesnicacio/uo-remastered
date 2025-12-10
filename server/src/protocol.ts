@@ -243,6 +243,10 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         ctx.send({ type: "error", code: "not_logged_in", message: "É necessário login para respawn." });
         return;
       }
+      if (ctx.currentStats && ctx.currentStats.hp > 0) {
+        ctx.send({ type: "error", code: "respawn_not_dead", message: "Respawn apenas quando estiver morto." });
+        return;
+      }
       const res = ctx.respawn();
       if (!res) {
         ctx.send({ type: "error", code: "respawn_failed", message: "Não foi possível respawnar." });
