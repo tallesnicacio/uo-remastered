@@ -64,6 +64,7 @@
 - Shutdown salva sessões automaticamente.
 - UI de login: nome de personagem via formulário antes de conectar.
 - Login aceita senha (default 1234) via UI e envia ao servidor (auth stub).
+- Accounts persistidos em `server/data/accounts.json`; login cria conta se não existir e valida senha, comando `/save` mantém stats/sessão.
 - NetClient evita reconexão quando já conectado/conectando (reúso de sessão).
 
 ## Próximos Passos Sugeridos
