@@ -123,6 +123,14 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         ctx.send({ type: "error", code: "not_logged_in", message: "É necessário efetuar login antes de enviar chat." });
         return;
       }
+      if (msg.text.startsWith("/who")) {
+        ctx.send({
+          type: "chat",
+          from: "server",
+          text: "Comando /who não implementado ainda"
+        });
+        return;
+      }
       ctx.broadcast({
         type: "chat",
         from: ctx.entityName ?? "anon",

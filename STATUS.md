@@ -44,6 +44,7 @@
 - Snapshot limpa fila local se player não for encontrado; overlay loga cada passo enviado.
 - Map bounds: server e client validam limites (20x12) e bloqueiam destino fora do mapa.
 - Status mostra contagem de entidades do último snapshot e tamanho da fila de passos.
+- Chat server: comando `/who` (placeholder).
 - Server mantém mapa de entidades em memória para sessões e movimentos (ainda sem broadcast de snapshot).
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
 - Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
