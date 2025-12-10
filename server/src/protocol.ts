@@ -39,6 +39,7 @@ type DispatchContext = {
     | null;
   saveAll: () => boolean;
   auth: (name: string, password?: string) => boolean;
+  respawn: () => { position: Position; stats?: unknown } | null;
 };
 
 const decoder = new TextDecoder();
@@ -212,6 +213,20 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         return;
       }
       ctx.send({ type: "target_ack", entityId: found.id, name: found.name });
+      return;
+    }
+    case "respawn": {
+      if (ctx.requireLogin && !ctx.entityId) {
+        ctx.send({ type: "error", code: "not_logged_in", message: "É necessário login para respawn." });
+        return;
+      }
+      const res = ctx.respawn();
+      if (!res) {
+        ctx.send({ type: "error", code: "respawn_failed", message: "Não foi possível respawnar." });
+        return;
+      }
+      ctx.broadcast({ type: "entity_move", entityId: ctx.entityId ?? "anon", position: res.position });
+      ctx.send({ type: "chat", from: "server", text: "Você foi respawnado." });
       return;
     }
     case "kill": {

@@ -39,6 +39,10 @@ export type ClientSave = {
   type: "save";
 };
 
+export type ClientRespawn = {
+  type: "respawn";
+};
+
 export type EntityStatsWire = {
   hp: number;
   hpMax: number;
@@ -56,7 +60,16 @@ export type ClientMove = {
   position: Position;
 };
 
-export type ClientMessage = ClientHello | ClientLogin | ClientPing | ClientChat | ClientMove | ClientTarget | ClientKill | ClientSave;
+export type ClientMessage =
+  | ClientHello
+  | ClientLogin
+  | ClientPing
+  | ClientChat
+  | ClientMove
+  | ClientTarget
+  | ClientKill
+  | ClientSave
+  | ClientRespawn;
 
 // Mensagens servidor -> cliente
 export type ServerWelcome = {

@@ -139,7 +139,21 @@ const server = Bun.serve({
         saveStats: (sessionId, stats) => sessions.updateStats(sessionId, stats),
         currentStats: identity?.entityId ? entities.get(identity.entityId)?.stats ?? null : null,
         saveAll: () => sessions.saveAll(),
-        auth: (name, password) => accounts.validateOrCreate(name, password)
+        auth: (name, password) => accounts.validateOrCreate(name, password),
+        respawn: () => {
+          if (!identity) return null;
+          const ent = entities.get(identity.entityId);
+          if (!ent) return null;
+          const pos = startPosition();
+          ent.position = pos;
+          ent.stats = baseStats();
+          entities.set(identity.entityId, ent);
+          if (identity.sessionId) {
+            sessions.updatePosition(identity.sessionId, pos);
+            sessions.updateStats(identity.sessionId, ent.stats);
+          }
+          return { position: pos, stats: ent.stats };
+        }
       });
     },
     close(ws) {

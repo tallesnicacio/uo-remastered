@@ -182,6 +182,11 @@ function bootstrap() {
       overlay.log("Solicitado save ao servidor");
       return;
     }
+    if (text === "/respawn") {
+      net.send({ type: "respawn" });
+      overlay.log("Solicitado respawn");
+      return;
+    }
     net.sendChat(text);
     overlay.log(`[você]: ${text}`);
   };
