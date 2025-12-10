@@ -6,28 +6,30 @@ export class ActionPanel {
     this.container.style.position = "absolute";
     this.container.style.right = "12px";
     this.container.style.bottom = "12px";
-    this.container.style.width = "120px";
-    this.container.style.background = "rgba(0,0,0,0.45)";
-    this.container.style.border = "1px solid rgba(255,255,255,0.2)";
-    this.container.style.borderRadius = "10px";
-    this.container.style.padding = "8px 6px";
+    this.container.style.width = "140px";
+    this.container.style.background = "linear-gradient(180deg, rgba(46,35,26,0.92), rgba(22,15,12,0.9))";
+    this.container.style.border = "2px solid rgba(221,189,130,0.55)";
+    this.container.style.borderRadius = "12px";
+    this.container.style.padding = "10px 8px";
     this.container.style.display = "grid";
     this.container.style.gridTemplateColumns = "1fr";
-    this.container.style.gap = "6px";
-    this.container.style.fontFamily = "Courier New, monospace";
+    this.container.style.gap = "8px";
+    this.container.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+    this.container.style.boxShadow = "0 0 12px rgba(0,0,0,0.6)";
 
     const buttons = ["HELP", "OPTIONS", "LOG OUT", "JOURNAL", "SKILLS", "CHAT", "PEACE", "STATUS"];
 
     buttons.forEach((label) => {
       const btn = document.createElement("button");
       btn.textContent = label;
-      btn.style.background = "linear-gradient(180deg,#353535,#1f1f1f)";
-      btn.style.border = "1px solid rgba(255,255,255,0.15)";
-      btn.style.borderRadius = "6px";
-      btn.style.color = "#e6d7b0";
+      btn.style.background = "linear-gradient(180deg,#3d2b1d,#1d1410)";
+      btn.style.border = "1px solid rgba(255,222,180,0.35)";
+      btn.style.borderRadius = "8px";
+      btn.style.color = "#f1e0c8";
       btn.style.fontWeight = "bold";
-      btn.style.padding = "6px 4px";
+      btn.style.padding = "8px 4px";
       btn.style.cursor = "pointer";
+      btn.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.15)";
       btn.addEventListener("click", () => onAction(label.toLowerCase()));
       this.container.appendChild(btn);
     });

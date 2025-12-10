@@ -13,6 +13,7 @@ import { LoginForm } from "./ui/login";
 import { Inventory } from "./state/inventory";
 import { InventoryPanel } from "./ui/inventory";
 import { ActionPanel } from "./ui/actions";
+import { MiniMap } from "./ui/minimap";
 import type { Position } from "@shared/types/position";
 import mapData from "../data/map.json";
 import type { MapData } from "./types/map";
@@ -50,6 +51,7 @@ function bootstrap() {
   const inventoryPanel = new InventoryPanel(root);
   const login = new LoginForm(root);
   new ActionPanel(root, (action) => overlay.log(`Ação: ${action}`));
+  const minimap = new MiniMap(root, palette, mapData as MapData);
 
   world.setObstacles(mapData.blocked.map(([x, y]) => ({ x, y })));
   renderer.setObstacles(world.getObstacles());
@@ -93,21 +95,7 @@ function bootstrap() {
   net.onReconcile = (pos) => {
     if (!world.localId) return;
     world.updatePosition(world.localId, pos);
-  };
-
-  net.onSnapshot = (entities) => {
-    world.applySnapshot(entities);
-    lastSnapshotCount = entities.length;
-    overlay.setStatus(`Conectado | Entidades: ${entities.length} | Fila: ${moveQueue.length}`);
-    // Se snapshot não contém localId, limpar fila para evitar drift
-    if (world.localId && !entities.find((e) => e.id === world.localId)) {
-      moveQueue = [];
-    }
-
-    const localStats = world.getLocalStats();
-    if (localStats) {
-      hud.update(localStats);
-    }
+    minimap.setPosition(pos);
   };
 
   net.onError = (code, message) => {
@@ -176,6 +164,12 @@ function bootstrap() {
         renderer.flashError(world.getLocalPosition() ?? { x: 0, y: 0, map: "Felucca" });
       }
     }
+
+    const pos = world.getLocalPosition();
+    if (pos) {
+      minimap.setPosition(pos);
+    }
+    minimap.setEntities(entities.map((e) => ({ ...e.position })));
   };
 
   net.onInventory = (items) => {

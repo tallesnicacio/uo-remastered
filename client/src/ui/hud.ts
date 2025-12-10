@@ -13,33 +13,47 @@ export class Hud {
   private expEl: HTMLDivElement;
   private roleEl: HTMLDivElement;
   private portrait: HTMLDivElement;
+  private title: HTMLDivElement;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
     this.container.style.position = "absolute";
     this.container.style.bottom = "12px";
     this.container.style.right = "140px";
-    this.container.style.background = "rgba(0,0,0,0.4)";
-    this.container.style.padding = "10px 12px";
-    this.container.style.borderRadius = "8px";
-    this.container.style.fontFamily = "Courier New, monospace";
+    this.container.style.background = "linear-gradient(180deg, rgba(55,55,55,0.8), rgba(25,25,25,0.8))";
+    this.container.style.padding = "12px";
+    this.container.style.borderRadius = "10px";
+    this.container.style.border = "2px solid rgba(255,222,180,0.35)";
+    this.container.style.fontFamily = "'Georgia','Times New Roman',serif";
     this.container.style.color = "#e0e0e0";
     this.container.style.minWidth = "200px";
     this.container.style.fontSize = "12px";
     this.container.style.lineHeight = "16px";
-    this.container.style.boxShadow = "0 0 8px rgba(0,0,0,0.4)";
+    this.container.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
+
+    this.title = document.createElement("div");
+    this.title.textContent = "STATUS";
+    this.title.style.fontSize = "13px";
+    this.title.style.fontWeight = "bold";
+    this.title.style.letterSpacing = "1px";
+    this.title.style.marginBottom = "8px";
+    this.title.style.color = "#f5e2ba";
+    this.title.style.textAlign = "center";
 
     this.portrait = document.createElement("div");
     this.portrait.style.width = "64px";
     this.portrait.style.height = "64px";
     this.portrait.style.borderRadius = "8px";
-    this.portrait.style.background = "radial-gradient(circle, #555 0%, #222 80%)";
-    this.portrait.style.marginBottom = "10px";
+    this.portrait.style.background = "radial-gradient(circle at 30% 30%, #6b5a49 0%, #2f2922 90%)";
+    this.portrait.style.margin = "0 auto 10px auto";
     this.portrait.style.display = "flex";
     this.portrait.style.alignItems = "center";
     this.portrait.style.justifyContent = "center";
     this.portrait.textContent = "Avatar";
     this.portrait.style.fontWeight = "bold";
+    this.portrait.style.color = "#f5e2ba";
+    this.portrait.style.border = "1px solid rgba(255,222,180,0.35)";
+    this.portrait.style.boxShadow = "inset 0 1px 2px rgba(0,0,0,0.4)";
 
     this.hpEl = document.createElement("div");
     this.hpBar = document.createElement("div");
@@ -52,6 +66,7 @@ export class Hud {
     this.expEl = document.createElement("div");
     this.roleEl = document.createElement("div");
 
+    this.container.appendChild(this.title);
     this.container.appendChild(this.portrait);
     this.container.appendChild(this.hpEl);
     this.container.appendChild(this.makeBarContainer(this.hpBar, "#6bc46b"));
@@ -103,14 +118,16 @@ export class Hud {
 
   private makeBarContainer(fill: HTMLDivElement, color: string) {
     const container = document.createElement("div");
-    container.style.background = "rgba(255,255,255,0.1)";
+    container.style.background = "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25))";
     container.style.borderRadius = "6px";
     container.style.height = "8px";
     container.style.marginBottom = "6px";
+    container.style.border = "1px solid rgba(255,222,180,0.25)";
     fill.style.height = "100%";
     fill.style.width = "0%";
     fill.style.background = color;
     fill.style.borderRadius = "6px";
+    fill.style.boxShadow = "0 0 6px rgba(0,0,0,0.3)";
     container.appendChild(fill);
     return container;
   }

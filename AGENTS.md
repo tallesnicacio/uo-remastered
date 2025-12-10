@@ -1,21 +1,32 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-- Work inside `ServUO/` (solution root). `Server/` hosts the core C# engine (`Server.csproj`), networking, persistence, and entrypoint. `Scripts/` holds gameplay logic (items, spells, quests, services); mirror its folder taxonomy when adding new systems. `Config/` stores server settings (`Server.cfg`, `*.cfg`)—keep environment-specific values out of source control. `Data/`, `Spawns/`, `RevampedSpawns/`, and `SpawnsOld/` provide world data and spawn layouts. `Ultima/` contains client asset readers and supporting utilities. The `makefile`, `_windebug.bat`, and `_winrelease.bat` orchestrate builds and runtime flags.
+## Estrutura do Projeto
+- Raiz gerenciada por Bun workspaces: `server/` (WebSocket + jogo), `client/` (renderer Canvas + UI), `shared/` (protocolos/tipos), `tools/` (scripts auxiliares). `ServUO/` é apenas referência histórica, não modifique.
+- Server: configs em `server/config/*.json`; dados persistidos em `server/data/accounts.json` e `server/data/sessions.json`; colisão/mapa em `server/data/collision.json` e `server/config/map.json`.
+- Client: código em `client/src/` (renderer, HUD, UI, networking); assets/dados em `client/data/`; HTML base em `client/public/`. Desktop usa `desktop/main.cjs` com Electron.
+- Shared: contratos de rede em `shared/packets/*.ts`, constantes em `shared/constants`, tipos em `shared/types`.
+- Arquivos de contexto: mantenha `STATUS.md`, `uoContext.md` e `PLANO_DESENVOLVIMENTO_NEWUO.md` atualizados a cada etapa relevante.
 
-## Build, Test, and Development Commands
-- Linux/macOS: `cd ServUO && make debug` for a debug build with verbose console; `make` or `make release` for optimized binaries. Windows: `_windebug.bat` for debug, `_winrelease.bat` for release. When needed, `dotnet build ServUO.sln` (Mono/.NET SDK 10+) also produces binaries. Before running, review `Config/Server.cfg` and related `*.cfg` to set data paths and ports. Launch the built server from `ServUO/` (e.g., `mono ServUO.exe` on Unix or `ServUO.exe` on Windows).
+## Comandos de Build, Teste e Desenvolvimento
+- Dev server: `bun run dev` (watch em `server/src/index.ts`). Dev client: `bun run dev:client`. Ambos: `bun run dev:both`.
+- Build: `bun run build` (server para `dist/server`), `bun run build:client` (client browser). Desktop: `bun run desktop:dev` para testar, `bun run desktop:build` para empacotar (Linux x64).
+- Lint/format/typecheck: `bun run lint`, `bun run format`, `bun run typecheck`. Testes: `bun test` (sem suites ainda).
+- Runtime esperado: Bun 1.1+. Não use NodeJS como alvo principal.
 
-## Coding Style & Naming Conventions
-- `.editorconfig` enforces UTF-8, spaces, 4-space indents, trailing whitespace cleanup, and final newlines. Use PascalCase for types, methods, and public members; camelCase for locals/parameters; prefix private fields with `_` only if already present in the edited file. Follow existing namespace and folder patterns in `Scripts/` to keep features discoverable. Prefer small, focused scripts with descriptive class names (e.g., `VoidPoolController`, `HousePlacementTool`).
+## Estilo de Código e Convenções
+- TypeScript em modo ESM. Prettier (`.prettierrc`): aspas duplas, tabWidth 2, ponto e vírgula. ESLint baseado em `@typescript-eslint` (ver `eslint.config.js`); `ServUO/**` e `dist/**` ignorados.
+- Respeite aliases do `tsconfig.json` (`@shared/*`, `@server/*`, `@client/*`). Prefira funções puras nos módulos `shared/`.
+- Nomes: PascalCase para tipos/classes, camelCase para funções/variáveis. Evite `any` (marcado como warn).
 
-## Testing Guidelines
-- No automated test suite is present; validate changes by running the server with `make debug` (or `_windebug.bat`) and exercising the affected system in-game. For spawn/config changes, load into a local world and watch the console for warnings or serialization errors. Include reproduction steps and observed results in your change notes.
+## Testes e Qualidade
+- Ainda não há testes automatizados; valide manualmente executando server+client: verificar login, chat, ping, movimentação, combate, inventário, HUD e minimapa.
+- Antes de abrir PR/commit, rode `bun run lint` e `bun run typecheck`. Se alterar protocolos, sincronize `shared/` e atualize cliente e servidor juntos.
 
-## Commit & Pull Request Guidelines
-- Use concise, imperative commit subjects similar to repo history (`Regained linux compability`, `readme fix`). Optional scope prefixes are welcome (`Scripts: fix pet res`). Para PRs, inclua: resumo, issue/feature link, impacto de configs (`Config/*.cfg`), migrations de dados/saves, e testes manuais (comandos/áreas). Prints/Gumps apenas para mudanças de UI. Não commitar segredos.
+## Commits e Pull Requests
+- Commits curtos em imperativo (`feat:`, `fix:`, `chore:` opcionais). Sempre descreva impacto em rede/protocolo e arquivos de dados (`server/data/*.json`).
+- PRs: inclua resumo, comandos rodados, screenshots/gifs para UI, e checklist de compatibilidade (client/server/desktop). Não suba segredos ou tokens.
 
-## Progresso Atual (MVP)
-- Servidor Bun: login/ping/chat/target/kill/move com validação de mapa/colisão; snapshots periódicos; regen de HP/Mana/Stamina; persistência de sessão (memória).
-- Cliente: Canvas renderer com sombras/animação, pathfinding A* com fila de passos, seleção/tooltip, overlay/log/status, chat, HUD (HP/Mana/Stamina/EXP), feedback visual de erro.
-- Comandos: `/ping`, `/who`, `/kill <id>`; clique direito move (fila), clique esquerdo inspeciona/target.
+## Dicas Rápidas de Desenvolvimento
+- Novos assets/mapas: alinhe `client/data/map.json` e `server/data/collision.json`; mantenha múltiplos layers e tiles coerentes.
+- Persistência: ao mexer em contas/sessões/roles, garanta migração dos arquivos em `server/data/`. Registros devem sobreviver a restart.
+- Interações: siga mecânicas de clique direito (mover) e esquerdo (seleção/duplo clique para interação); setas continuam válidas.
