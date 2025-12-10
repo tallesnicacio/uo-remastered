@@ -16,7 +16,8 @@
     "dev:both": "bun run dev & bun run dev:client",
     "start": "bun run server/src/index.ts",
     "build": "bun build server/src/index.ts --outdir dist/server --target bun --minify",
-    "build:client": "bun build client/src/index.ts --outdir dist/client --target browser",
+    "build:client": "mkdir -p dist/client && bun build client/src/index.ts --outdir dist/client --target browser --sourcemap=inline && cp client/public/index.html dist/client/index.html",
+    "desktop:dev": "bun run build:client && bunx electron desktop/main.cjs",
     "test": "bun test",
     "test:watch": "bun test --watch",
     "lint": "bunx eslint . --ext .ts,.tsx",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "bun-types": "latest",
+    "electron": "^29.2.0",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.0"

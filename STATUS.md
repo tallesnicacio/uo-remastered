@@ -24,8 +24,10 @@
 - Rede cliente: `client/src/net/client.ts` implementa hello/login/ping/chat/move e callbacks.
 - Estado cliente: `client/src/state/world.ts` mantém entidades e posição local.
 - Tooling: configs adicionadas `.eslintrc.cjs` e `.prettierrc` (deps já listadas em package.json).
+- Desktop: alvo Electron via `desktop/main.cjs`; build do client copia `client/public/index.html` para `dist/client`. Scripts: `bun run build:client` e `bun run desktop:dev` (requer `electron` instalado).
 
 ## Próximos Passos Sugeridos
 - Expandir autenticação/identidade (persistir sessions) e mapear entidade por WebSocket no servidor.
 - Integrar render/anim com dados de rede (exibir múltiplas entidades, prever latência).
 - Rodar lint/format/typecheck quando dependências estiverem instaladas.
+- Empacotar desktop (Electron/Tauri) e melhorar pipeline de assets (layers/sombras/animações).
