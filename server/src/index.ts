@@ -125,7 +125,9 @@ const server = Bun.serve<WebSocket>({
         killEntity: (entityId) => {
           const ent = entities.get(entityId);
           if (!ent) return null;
-          entities.delete(entityId);
+          ent.stats.hp = 0;
+          ent.stats.mana = 0;
+          entities.set(entityId, ent);
           return { id: entityId, name: ent.name };
         },
         saveStats: (sessionId, stats) => sessions.updateStats(sessionId, stats),

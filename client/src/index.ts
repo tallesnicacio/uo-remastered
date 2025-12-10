@@ -124,6 +124,24 @@ function bootstrap() {
     overlay.log(`Target: ${name} (${entityId})`);
   };
 
+  net.onSnapshot = (entities) => {
+    world.applySnapshot(entities);
+    lastSnapshotCount = entities.length;
+    overlay.setStatus(`Conectado | Entidades: ${entities.length} | Fila: ${moveQueue.length}`);
+    // Se snapshot não contém localId, limpar fila para evitar drift
+    if (world.localId && !entities.find((e) => e.id === world.localId)) {
+      moveQueue = [];
+    }
+
+    const localStats = world.getLocalStats();
+    if (localStats) {
+      hud.update(localStats);
+      if (localStats.hp <= 0) {
+        renderer.flashError(world.getLocalPosition() ?? { x: 0, y: 0, map: "Felucca" });
+      }
+    }
+  };
+
   net.connect();
 
   chat.onSend = (text) => {
