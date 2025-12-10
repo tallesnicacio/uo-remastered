@@ -110,6 +110,10 @@ function bootstrap() {
         const lastPos = moveQueue[moveQueue.length - 1];
         renderer.flashError(lastPos);
       }
+    } else if (code === "auth_failed") {
+      overlay.log("Falha na senha. Tente novamente.");
+      playerPassword = "1234";
+      login.show("Senha inválida.");
     }
   };
 

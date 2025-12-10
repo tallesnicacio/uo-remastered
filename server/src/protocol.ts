@@ -38,6 +38,7 @@ type DispatchContext = {
       }
     | null;
   saveAll: () => boolean;
+  auth: (name: string, password?: string) => boolean;
 };
 
 const decoder = new TextDecoder();
@@ -118,7 +119,7 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
       });
       return;
     case "login": {
-      if (msg.password && msg.password !== "1234") {
+      if (!ctx.auth(msg.name, msg.password)) {
         ctx.send({ type: "error", code: "auth_failed", message: "Senha inválida" });
         return;
       }

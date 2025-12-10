@@ -1,6 +1,7 @@
 import { handleClientMessage, parseClientMessage } from "./protocol";
 import { loadConfig } from "./config";
 import { SessionStore } from "./session";
+import { AccountStore } from "./accounts";
 import type { ServerMessage } from "@shared/packets/messages";
 import { GAME_NAME } from "@shared/constants/runtime";
 import type { Position } from "@shared/types/position";
@@ -23,6 +24,7 @@ type EntityState = {
 const entities = new Map<string, EntityState>();
 let nextEntityId = 1;
 const sessions = new SessionStore();
+const accounts = new AccountStore();
 const blocked = new Set<string>((collision.blocked as [number, number][]).map(([x, y]) => `${x},${y}`));
 const mapBounds = { width: collision.width ?? 0, height: collision.height ?? 0 };
 
@@ -136,7 +138,8 @@ const server = Bun.serve({
         },
         saveStats: (sessionId, stats) => sessions.updateStats(sessionId, stats),
         currentStats: identity?.entityId ? entities.get(identity.entityId)?.stats ?? null : null,
-        saveAll: () => sessions.saveAll()
+        saveAll: () => sessions.saveAll(),
+        auth: (name, password) => accounts.validateOrCreate(name, password)
       });
     },
     close(ws) {

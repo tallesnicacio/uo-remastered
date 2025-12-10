@@ -3,6 +3,7 @@ export class LoginForm {
   private input: HTMLInputElement;
   private password: HTMLInputElement;
   onSubmit?: (name: string, password?: string) => void;
+  onShow?: () => void;
 
   constructor(root: HTMLElement) {
     this.container = document.createElement("div");
@@ -77,5 +78,18 @@ export class LoginForm {
         this.container.style.display = "none";
       }
     });
+  }
+
+  show(message?: string) {
+    if (message) {
+      const note = document.createElement("div");
+      note.textContent = message;
+      note.style.color = "#ff9f9f";
+      note.style.marginTop = "8px";
+      note.style.fontSize = "12px";
+      this.container.appendChild(note);
+    }
+    this.container.style.display = "flex";
+    this.onShow?.();
   }
 }
