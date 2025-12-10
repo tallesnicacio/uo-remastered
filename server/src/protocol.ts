@@ -17,6 +17,7 @@ type DispatchContext = {
   motd: string;
   requireLogin: boolean;
   isWalkable: (x: number, y: number) => boolean;
+  listPlayers: () => Array<{ id: string; name: string }>;
 };
 
 const decoder = new TextDecoder();
@@ -124,10 +125,12 @@ export function handleClientMessage(msg: ClientMessage, ctx: DispatchContext) {
         return;
       }
       if (msg.text.startsWith("/who")) {
+        const players = ctx.listPlayers();
+        const names = players.map((p) => p.name).join(", ") || "Nenhum";
         ctx.send({
           type: "chat",
           from: "server",
-          text: "Comando /who não implementado ainda"
+          text: `Online (${players.length}): ${names}`
         });
         return;
       }
